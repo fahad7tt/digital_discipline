@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/digital_app.dart';
+
 import '../bloc/digital_app_bloc.dart';
-import 'package:uuid/uuid.dart';
 
 class DigitalAppScreen extends StatelessWidget {
   const DigitalAppScreen({super.key});
@@ -10,71 +9,58 @@ class DigitalAppScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Focus Apps')),
+      appBar: AppBar(
+        title: const Text('Your Digital Intentions'),
+      ),
       body: BlocBuilder<DigitalAppBloc, DigitalAppState>(
         builder: (context, state) {
+
+          // 1️⃣ Loading state
           if (state is DigitalAppLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is DigitalAppLoaded) {
-            final apps = state.apps;
-            return ListView.builder(
-              itemCount: apps.length,
-              itemBuilder: (_, index) => ListTile(
-                title: Text(apps[index].name),
-                subtitle: Text('Limit: ${apps[index].dailyLimitMinutes} min'),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () {
-                    context.read<DigitalAppBloc>().add(DeleteDigitalAppEvent(apps[index].id));
-                  },
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          // 2️⃣ EMPTY STATE
+          if (state is DigitalAppLoaded && state.apps.isEmpty) {
+            return const Center(
+              child: Padding(
+                padding: EdgeInsets.all(24),
+                child: Text(
+                  'Choose one app you want to be more intentional with.',
+                  textAlign: TextAlign.center,
                 ),
               ),
             );
-          } else if (state is DigitalAppError) {
-            return Center(child: Text(state.message));
           }
-          return const SizedBox();
+
+          // 3️⃣ DATA STATE
+          if (state is DigitalAppLoaded) {
+            return ListView.builder(
+              itemCount: state.apps.length,
+              itemBuilder: (context, index) {
+                final app = state.apps[index];
+                return ListTile(
+                  title: Text(app.name),
+                  subtitle: Text(
+                    'Daily limit: ${app.dailyLimitMinutes} min',
+                  ),
+                );
+              },
+            );
+          }
+
+          // 4️⃣ ERROR STATE
+          if (state is DigitalAppError) {
+            return Center(
+              child: Text(state.message),
+            );
+          }
+
+          // 5️⃣ FALLBACK (should rarely hit)
+          return const SizedBox.shrink();
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () => _showAddDialog(context),
-      ),
-    );
-  }
-
-  void _showAddDialog(BuildContext context) {
-    final nameController = TextEditingController();
-    final limitController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Add Focus App'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(controller: nameController, decoration: const InputDecoration(labelText: 'App Name')),
-            TextField(controller: limitController, decoration: const InputDecoration(labelText: 'Daily Limit (min)'), keyboardType: TextInputType.number),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              final id = const Uuid().v4();
-              final name = nameController.text;
-              final limit = int.tryParse(limitController.text) ?? 30;
-              final app = DigitalApp(id: id, name: name, dailyLimitMinutes: limit, createdAt: DateTime.now());
-              context.read<DigitalAppBloc>().add(AddDigitalAppEvent(app));
-              Navigator.pop(context);
-            },
-            child: const Text('Add'),
-          ),
-        ],
       ),
     );
   }

@@ -6,7 +6,13 @@ class AddDigitalApp {
 
   AddDigitalApp(this.repository);
 
-  Future<void> call(DigitalApp app) {
-    return repository.add(app);
+  Future<void> call(DigitalApp app) async {
+    if (app.name.trim().isEmpty) {
+      throw Exception('App name cannot be empty');
+    }
+    if (app.dailyLimitMinutes <= 0) {
+      throw Exception('Daily limit must be greater than zero');
+    }
+    await repository.add(app);
   }
 }

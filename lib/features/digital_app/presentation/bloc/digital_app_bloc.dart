@@ -27,6 +27,12 @@ class DigitalAppBloc extends Bloc<DigitalAppEvent, DigitalAppState> {
   Future<void> _onAdd(
       AddDigitalAppEvent event, Emitter<DigitalAppState> emit) async {
     await addDigitalApp(event.app);
-    add(LoadDigitalApps());
+    try {
+  await addDigitalApp(event.app);
+  add(LoadDigitalApps());
+} catch (e) {
+  emit(DigitalAppError(e.toString()));
+}
+
   }
 }
