@@ -5,13 +5,17 @@ import 'core/theme/app_theme.dart';
 import 'core/utils/app_di.dart';
 import 'features/digital_app/data/models/digital_app_model.dart';
 import 'features/digital_app/presentation/bloc/digital_app_bloc.dart';
-import 'features/digital_app/presentation/screens/digital_app_screen.dart';
+import 'features/navigation/root_screen.dart';
+import 'features/usage_logging/data/models/usage_log_model.dart';
+import 'features/usage_logging/domain/repositories/usage_log_repo.dart';
+import 'features/usage_logging/domain/usecases/add_usage_log.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
   Hive.registerAdapter(DigitalAppModelAdapter());
+  Hive.registerAdapter(UsageLogModelAdapter());
 
   await AppDI.init();
 
@@ -23,17 +27,23 @@ class IntentApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => DigitalAppBloc(
-        AppDI.addDigitalApp,
-        AppDI.digitalAppRepository,
-      )..add(LoadDigitalApps()),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Intent – Digital Discipline',
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        home: const DigitalAppScreen(),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<UsageLogRepository>.value(value: AppDI.usageLogRepository),
+        RepositoryProvider<AddUsageLog>.value(value: AppDI.addUsageLog),
+      ],
+      child: BlocProvider(
+        create: (_) => DigitalAppBloc(
+          AppDI.addDigitalApp,
+          AppDI.digitalAppRepository,
+        )..add(LoadDigitalApps()),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Intent – Digital Discipline',
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          home: const RootScreen(),
+        ),
       ),
     );
   }

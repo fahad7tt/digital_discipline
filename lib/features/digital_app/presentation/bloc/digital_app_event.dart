@@ -26,3 +26,12 @@ class DeleteDigitalAppEvent extends DigitalAppEvent {
   @override
   List<Object?> get props => [id];
 }
+
+class UpdateDigitalAppEvent extends DigitalAppEvent {
+  final DigitalApp app;
+
+  const UpdateDigitalAppEvent(this.app);
+
+  @override
+  List<Object?> get props => [app];
+}
