@@ -1,12 +1,12 @@
 import '../entities/digital_app.dart';
 import '../repositories/digital_app_repo.dart';
 
-class AddDigitalDiscipline {
-  final DigitalDisciplineRepository repository;
+class AddDigitalApp {
+  final DigitalAppRepository repository;
 
-  AddDigitalDiscipline(this.repository);
+  AddDigitalApp(this.repository);
 
-  Future<void> call(DigitalDiscipline discipline) {
-    return repository.add(discipline);
+  Future<void> call(DigitalApp app) {
+    return repository.add(app);
   }
 }

@@ -1,12 +1,12 @@
 import 'package:equatable/equatable.dart';
 
-class DigitalDiscipline extends Equatable {
+class DigitalApp extends Equatable {
   final String id;
   final String name;
   final int dailyLimitMinutes;
   final DateTime createdAt;
 
-  const DigitalDiscipline({
+  const DigitalApp({
     required this.id,
     required this.name,
     required this.dailyLimitMinutes,
