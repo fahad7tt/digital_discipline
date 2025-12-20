@@ -1,4 +1,4 @@
-import '../entities/digital_discipline.dart';
+import '../entities/digital_app.dart';
 abstract class DigitalDisciplineRepository {
   Future<List<DigitalDiscipline>> getAll();
   Future<void> add(DigitalDiscipline discipline);
