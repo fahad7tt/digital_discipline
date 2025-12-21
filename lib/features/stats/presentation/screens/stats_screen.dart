@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/insights_bloc.dart';
+import '../bloc/stats_bloc.dart';
 
-class InsightsScreen extends StatefulWidget {
-  const InsightsScreen({super.key});
+class StatsScreen extends StatefulWidget {
+  const StatsScreen({super.key});
 
   @override
-  State<InsightsScreen> createState() => _InsightsScreenState();
+  State<StatsScreen> createState() => _StatsScreenState();
 }
 
-class _InsightsScreenState extends State<InsightsScreen> {
+class _StatsScreenState extends State<StatsScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<InsightsBloc>().add(const LoadInsights());
+    context.read<StatsBloc>().add(const LoadStats());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Insights')),
-      body: BlocBuilder<InsightsBloc, InsightsState>(
+      body: BlocBuilder<StatsBloc, StatsState>(
         builder: (context, state) {
           // Loading state
-          if (state is InsightsLoading) {
+          if (state is StatsLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
           // Error state
-          if (state is InsightsError) {
+          if (state is StatsError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -39,7 +39,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<InsightsBloc>().add(const LoadInsights());
+                      context.read<StatsBloc>().add(const LoadStats());
                     },
                     child: const Text('Retry'),
                   ),
@@ -49,10 +49,10 @@ class _InsightsScreenState extends State<InsightsScreen> {
           }
 
           // Loaded state
-          if (state is InsightsLoaded) {
+          if (state is StatsLoaded) {
             return RefreshIndicator(
               onRefresh: () async {
-                context.read<InsightsBloc>().add(const LoadInsights());
+                context.read<StatsBloc>().add(const LoadStats());
               },
               child: ListView(
                 padding: const EdgeInsets.all(16),

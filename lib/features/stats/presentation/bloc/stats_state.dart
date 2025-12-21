@@ -1,27 +1,27 @@
-part of 'insights_bloc.dart';
+part of 'stats_bloc.dart';
 
-abstract class InsightsState extends Equatable {
-  const InsightsState();
+abstract class StatsState extends Equatable {
+  const StatsState();
 
   @override
   List<Object?> get props => [];
 }
 
-class InsightsInitial extends InsightsState {
-  const InsightsInitial();
+class StatsInitial extends StatsState {
+  const StatsInitial();
 }
 
-class InsightsLoading extends InsightsState {
-  const InsightsLoading();
+class StatsLoading extends StatsState {
+  const StatsLoading();
 }
 
-class InsightsLoaded extends InsightsState {
+class StatsLoaded extends StatsState {
   final int totalMinutesThisWeek;
   final String mostCommonTrigger;
   final int logCount;
   final int averageDailyUsage;
 
-  const InsightsLoaded({
+  const StatsLoaded({
     required this.totalMinutesThisWeek,
     required this.mostCommonTrigger,
     required this.logCount,
@@ -33,10 +33,10 @@ class InsightsLoaded extends InsightsState {
       [totalMinutesThisWeek, mostCommonTrigger, logCount, averageDailyUsage];
 }
 
-class InsightsError extends InsightsState {
+class StatsError extends StatsState {
   final String message;
 
-  const InsightsError(this.message);
+  const StatsError(this.message);
 
   @override
   List<Object?> get props => [message];

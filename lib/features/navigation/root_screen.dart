@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../dashboard/presentation/screens/dashboard_screen.dart';
 import '../digital_app/presentation/screens/digital_app_screen.dart';
-import '../insights/presentation/screens/insights_screen.dart';
+import '../stats/presentation/screens/stats_screen.dart';
 import '../usage_logging/presentation/screens/usage_log_screen.dart';
 
 class RootScreen extends StatefulWidget {
@@ -19,7 +19,7 @@ class _RootScreenState extends State<RootScreen> {
     (label: 'Dashboard', icon: Icons.home, screen: DashboardScreen()),
     (label: 'Apps', icon: Icons.apps, screen: DigitalAppScreen()),
     (label: 'Usage', icon: Icons.timer, screen: UsageLogScreen(focusAppId: '', focusAppName: 'All Apps')),
-    (label: 'Insights', icon: Icons.insights, screen: InsightsScreen()),
+    (label: 'Stats', icon: Icons.insights, screen: StatsScreen()),
   ];
 
   @override

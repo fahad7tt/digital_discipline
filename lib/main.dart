@@ -5,8 +5,8 @@ import 'core/theme/app_theme.dart';
 import 'core/utils/app_di.dart';
 import 'features/digital_app/data/models/digital_app_model.dart';
 import 'features/digital_app/presentation/bloc/digital_app_bloc.dart';
-import 'features/insights/presentation/bloc/insights_bloc.dart';
 import 'features/navigation/root_screen.dart';
+import 'features/stats/presentation/bloc/stats_bloc.dart';
 import 'features/usage_logging/data/models/usage_log_model.dart';
 import 'features/usage_logging/domain/repositories/usage_log_repo.dart';
 import 'features/usage_logging/domain/usecases/add_usage_log.dart';
@@ -42,7 +42,7 @@ class IntentApp extends StatelessWidget {
             )..add(LoadDigitalApps()),
           ),
           BlocProvider(
-            create: (_) => InsightsBloc(
+            create: (_) => StatsBloc(
               AppDI.usageLogRepository,
               AppDI.weeklySummary,
               AppDI.calculateDailyDiscipline,

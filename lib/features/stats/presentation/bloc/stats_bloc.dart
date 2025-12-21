@@ -4,27 +4,27 @@ import '../../domain/usecases/weekly_summary.dart';
 import '../../domain/usecases/calculate_discipline.dart';
 import '../../../usage_logging/domain/repositories/usage_log_repo.dart';
 
-part 'insights_event.dart';
-part 'insights_state.dart';
+part 'stats_event.dart';
+part 'stats_state.dart';
 
-class InsightsBloc extends Bloc<InsightsEvent, InsightsState> {
+class StatsBloc extends Bloc<StatsEvent, StatsState> {
   final UsageLogRepository usageLogRepository;
   final WeeklySummary weeklySummary;
   final CalculateDailyDiscipline calculateDailyDiscipline;
 
-  InsightsBloc(
+  StatsBloc(
     this.usageLogRepository,
     this.weeklySummary,
     this.calculateDailyDiscipline,
-  ) : super(InsightsInitial()) {
-    on<LoadInsights>(_onLoad);
+  ) : super(StatsInitial()) {
+    on<LoadStats>(_onLoad);
   }
 
   Future<void> _onLoad(
-    LoadInsights event,
-    Emitter<InsightsState> emit,
+    LoadStats event,
+    Emitter<StatsState> emit,
   ) async {
-    emit(InsightsLoading());
+    emit(StatsLoading());
     try {
       // Get logs for all apps (using empty string for all)
       final allLogs = await usageLogRepository.getLogsForApp('');
@@ -39,7 +39,7 @@ class InsightsBloc extends Bloc<InsightsEvent, InsightsState> {
       final totalMinutes = weeklySummary.totalMinutes(weeklyLogs);
       final mostCommonTrigger = weeklySummary.mostCommonTrigger(weeklyLogs);
 
-      emit(InsightsLoaded(
+      emit(StatsLoaded(
         totalMinutesThisWeek: totalMinutes,
         mostCommonTrigger: mostCommonTrigger,
         logCount: weeklyLogs.length,
@@ -47,7 +47,7 @@ class InsightsBloc extends Bloc<InsightsEvent, InsightsState> {
             weeklyLogs.isEmpty ? 0 : (totalMinutes / 7).round(),
       ));
     } catch (e) {
-      emit(InsightsError(e.toString()));
+      emit(StatsError(e.toString()));
     }
   }
 }

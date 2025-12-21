@@ -7,8 +7,8 @@ import '../../features/usage_logging/data/datasources/usage_log_local_datasource
 import '../../features/usage_logging/data/models/usage_log_model.dart';
 import '../../features/usage_logging/data/repositories/usage_log_repository_impl.dart';
 import '../../features/usage_logging/domain/usecases/add_usage_log.dart';
-import '../../features/insights/domain/usecases/calculate_discipline.dart';
-import '../../features/insights/domain/usecases/weekly_summary.dart';
+import '../../features/stats/domain/usecases/calculate_discipline.dart';
+import '../../features/stats/domain/usecases/weekly_summary.dart';
 import '../../features/dashboard/domain/usecases/get_todays_insight.dart';
 import '../../features/dashboard/domain/usecases/get_contextual_insight.dart';
 

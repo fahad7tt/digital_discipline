@@ -1,7 +1,6 @@
 import 'package:digital_discipline/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:flutter/material.dart';
-
-import '../../features/insights/presentation/screens/insights_screen.dart';
+import '../../features/stats/presentation/screens/stats_screen.dart';
 
 class BottomNavbar extends StatefulWidget {
   const BottomNavbar({super.key});
@@ -15,7 +14,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
 
   final pages = [
     const DashboardScreen(),
-    const InsightsScreen(),
+    const StatsScreen(),
   ];
 
   @override
