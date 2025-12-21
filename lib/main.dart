@@ -5,6 +5,7 @@ import 'core/theme/app_theme.dart';
 import 'core/utils/app_di.dart';
 import 'features/digital_app/data/models/digital_app_model.dart';
 import 'features/digital_app/presentation/bloc/digital_app_bloc.dart';
+import 'features/insights/presentation/bloc/insights_bloc.dart';
 import 'features/navigation/root_screen.dart';
 import 'features/usage_logging/data/models/usage_log_model.dart';
 import 'features/usage_logging/domain/repositories/usage_log_repo.dart';
@@ -32,11 +33,22 @@ class IntentApp extends StatelessWidget {
         RepositoryProvider<UsageLogRepository>.value(value: AppDI.usageLogRepository),
         RepositoryProvider<AddUsageLog>.value(value: AppDI.addUsageLog),
       ],
-      child: BlocProvider(
-        create: (_) => DigitalAppBloc(
-          AppDI.addDigitalApp,
-          AppDI.digitalAppRepository,
-        )..add(LoadDigitalApps()),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => DigitalAppBloc(
+              AppDI.addDigitalApp,
+              AppDI.digitalAppRepository,
+            )..add(LoadDigitalApps()),
+          ),
+          BlocProvider(
+            create: (_) => InsightsBloc(
+              AppDI.usageLogRepository,
+              AppDI.weeklySummary,
+              AppDI.calculateDailyDiscipline,
+            ),
+          ),
+        ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Intent – Digital Discipline',

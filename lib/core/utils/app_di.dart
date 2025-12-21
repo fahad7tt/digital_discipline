@@ -7,12 +7,20 @@ import '../../features/usage_logging/data/datasources/usage_log_local_datasource
 import '../../features/usage_logging/data/models/usage_log_model.dart';
 import '../../features/usage_logging/data/repositories/usage_log_repository_impl.dart';
 import '../../features/usage_logging/domain/usecases/add_usage_log.dart';
+import '../../features/insights/domain/usecases/calculate_discipline.dart';
+import '../../features/insights/domain/usecases/weekly_summary.dart';
+import '../../features/dashboard/domain/usecases/get_todays_insight.dart';
+import '../../features/dashboard/domain/usecases/get_contextual_insight.dart';
 
 class AppDI {
   static late DigitalAppRepositoryImpl digitalAppRepository;
   static late AddDigitalApp addDigitalApp;
   static late UsageLogRepositoryImpl usageLogRepository;
   static late AddUsageLog addUsageLog;
+  static late WeeklySummary weeklySummary;
+  static late CalculateDailyDiscipline calculateDailyDiscipline;
+  static late GetTodaysInsight getTodaysInsight;
+  static late GetContextualInsight getContextualInsight;
 
   static Future<void> init() async {
     final digitalAppBox =
@@ -31,5 +39,13 @@ class AppDI {
     final usageLocal = UsageLogLocalDataSourceImpl(usageLogBox);
     usageLogRepository = UsageLogRepositoryImpl(usageLocal);
     addUsageLog = AddUsageLog(usageLogRepository);
+
+    // Insights usecases
+    weeklySummary = WeeklySummary();
+    calculateDailyDiscipline = CalculateDailyDiscipline();
+
+    // Dashboard insights
+    getTodaysInsight = GetTodaysInsight();
+    getContextualInsight = GetContextualInsight();
   }
 }
