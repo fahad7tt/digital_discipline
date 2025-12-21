@@ -31,11 +31,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const SizedBox(height: 16),
                 AppSummary(),
                 const SizedBox(height: 16),
-                TodaysInsightCard(insight: AppDI.getTodaysInsight()),
-                const SizedBox(height: 16),
-                // Show contextual insight if user has exceeded any threshold
+                // TodaysInsightCard(insight: AppDI.getTodaysInsight()),
+                // const SizedBox(height: 16),
+
+                // 🔥 SINGLE insight logic
+                // _buildInsightSection(context, state),
+
                 if (state is DigitalAppLoaded && state.apps.isNotEmpty)
                   _buildContextualInsights(context, state.apps),
+
+//                   // 🔹 Fallback insight (always rendered once)
+// if (state is! DigitalAppLoaded ||
+//     state.apps.isEmpty)
+//   _buildFallbackInsight(),
+
                 ReflectionPrompt(),
               ],
             ),
@@ -45,11 +54,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+//   Widget _buildInsightSection(
+//   BuildContext context,
+//   DigitalAppState state,
+// ) {
+//   if (state is! DigitalAppLoaded || state.apps.isEmpty) {
+//     return _buildFallbackInsight();
+//   }
+
+//   return _buildContextualInsights(context, state.apps);
+// }
+
   Widget _buildContextualInsights(
     BuildContext context,
     List apps,
   ) {
-    final usageLogRepository = RepositoryProvider.of<UsageLogRepository>(context);
+    final usageLogRepository =
+        RepositoryProvider.of<UsageLogRepository>(context);
 
     return FutureBuilder(
       future: _getHighestUsageInsight(usageLogRepository, apps),
@@ -58,6 +79,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           return const SizedBox.shrink();
         }
 
+        // ✅ Contextual insight available
         if (snapshot.hasData && snapshot.data != null) {
           return Column(
             children: [
@@ -67,8 +89,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
           );
         }
 
-        return const SizedBox.shrink();
+        // ✅ FALLBACK when usage is 0 or below threshold
+        return _buildFallbackInsight();
       },
+    );
+  }
+
+  Widget _buildFallbackInsight() {
+    return Column(
+      children: [
+        TodaysInsightCard(insight: AppDI.getTodaysInsight()),
+        const SizedBox(height: 16),
+      ],
     );
   }
 
@@ -96,7 +128,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     // Get contextual insight for highest usage
     if (highestDuration >= 15) {
-      return AppDI.getContextualInsight(highestDuration);
+      final insight = AppDI.getContextualInsight(highestDuration);
+      return insight;
     }
 
     return null;
