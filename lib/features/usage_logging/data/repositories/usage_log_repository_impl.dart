@@ -15,12 +15,12 @@ class UsageRepositoryImpl implements UsageRepository {
 
   @override
   Future<List<AppUsage>> getTodayUsage() async {
-    final raw = await dataSource.getTodayUsage();
-    return raw.entries
-        .map((e) => AppUsage(
-              packageName: e.key,
-              appName: e.key, 
-              minutesUsed: e.value,
+    final rawList = await dataSource.getTodayUsage();
+    return rawList
+        .map((map) => AppUsage(
+              packageName: map['packageName'] as String,
+              appName: map['appName'] as String,
+              minutesUsed: map['minutesUsed'] as int,
             ))
         .toList();
   }

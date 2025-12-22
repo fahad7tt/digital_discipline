@@ -5,7 +5,7 @@ import '../digital_app/presentation/screens/digital_app_screen.dart';
 import '../stats/presentation/screens/stats_screen.dart';
 import '../usage_logging/presentation/bloc/usage_log_bloc.dart';
 import '../usage_logging/presentation/bloc/usage_log_event.dart';
-import '../usage_logging/presentation/screens/usage_log_screen.dart';
+import '../usage_logging/presentation/screens/usage_overview.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
@@ -14,14 +14,13 @@ class RootScreen extends StatefulWidget {
   State<RootScreen> createState() => _RootScreenState();
 }
 
-class _RootScreenState extends State<RootScreen>
-    with WidgetsBindingObserver {
+class _RootScreenState extends State<RootScreen> with WidgetsBindingObserver {
   int _selectedIndex = 0;
 
-  final List<({String label, IconData icon, Widget screen})> _screens = const [
+  final List<({String label, IconData icon, Widget screen})> _screens = [
     (label: 'Dashboard', icon: Icons.home, screen: DashboardScreen()),
     (label: 'Apps', icon: Icons.apps, screen: DigitalAppScreen()),
-    (label: 'Usage', icon: Icons.timer, screen: AppUsageDetailScreen(packageName: '', appName: '')),
+    (label: 'Usage', icon: Icons.timer, screen: UsageOverviewScreen()),
     (label: 'Stats', icon: Icons.insights, screen: StatsScreen()),
   ];
 

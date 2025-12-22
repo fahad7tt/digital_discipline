@@ -3,11 +3,10 @@ package com.example.digital_discipline
 import android.app.AppOpsManager
 import android.app.usage.UsageStatsManager
 import android.content.Context
-import android.os.Bundle
+import android.content.pm.PackageManager
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-import java.util.Calendar
 
 class MainActivity : FlutterActivity() {
 
@@ -21,15 +20,9 @@ class MainActivity : FlutterActivity() {
             CHANNEL
         ).setMethodCallHandler { call, result ->
             when (call.method) {
-                "getTodayUsage" -> {
-                    result.success(getTodayUsage())
-                }
-                "hasUsageAccess" -> {
-                    result.success(hasUsageAccess())
-                }
-                else -> {
-                    result.notImplemented()
-                }
+                "getTodayUsage" -> result.success(getTodayUsage())
+                "hasUsageAccess" -> result.success(hasUsageAccess())
+                else -> result.notImplemented()
             }
         }
     }
@@ -44,40 +37,59 @@ class MainActivity : FlutterActivity() {
         return mode == AppOpsManager.MODE_ALLOWED
     }
 
-    private fun getTodayUsage(): Map<String, Int> {
-    val usageStatsManager =
-        getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+    // ✅ THIS IS THE FIX
+    private fun getTodayUsage(): List<Map<String, Any>> {
+        val usageStatsManager =
+            getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
-    val endTime = System.currentTimeMillis()
-    val startTime = endTime - 24 * 60 * 60 * 1000  // rolling 24h window
+        val endTime = System.currentTimeMillis()
+        val startTime = endTime - 24 * 60 * 60 * 1000
 
-    val stats = usageStatsManager.queryUsageStats(
-        UsageStatsManager.INTERVAL_DAILY,
-        startTime,
-        endTime
-    )
-
-    val usageMap = mutableMapOf<String, Int>()
-
-    android.util.Log.d("USAGE_DEBUG", "---- USAGE STATS START ----")
-    android.util.Log.d("USAGE_DEBUG", "Stats count: ${stats.size}")
-
-    for (usage in stats) {
-        val minutes = (usage.totalTimeInForeground / 60000).toInt()
-
-        android.util.Log.d(
-            "USAGE_DEBUG",
-            "App: ${usage.packageName}, foreground(ms): ${usage.totalTimeInForeground}, minutes: $minutes"
+        val stats = usageStatsManager.queryUsageStats(
+            UsageStatsManager.INTERVAL_DAILY,
+            startTime,
+            endTime
         )
 
-        if (minutes > 0) {
-            usageMap[usage.packageName] = minutes
+        val pm = applicationContext.packageManager
+        val result = mutableListOf<Map<String, Any>>()
+
+        android.util.Log.d("USAGE_DEBUG", "---- USAGE STATS START ----")
+
+        for (usage in stats) {
+            val minutes = (usage.totalTimeInForeground / 60000).toInt()
+            if (minutes <= 0) continue
+
+            val appName = try {
+                val appInfo = pm.getApplicationInfo(
+                    usage.packageName,
+                    PackageManager.MATCH_ALL
+                )
+                pm.getApplicationLabel(appInfo).toString()
+            } catch (e: Exception) {
+                android.util.Log.e(
+                    "USAGE_DEBUG",
+                    "Failed to resolve app name for ${usage.packageName}",
+                    e
+                )
+                usage.packageName
+            }
+
+            android.util.Log.d(
+                "USAGE_DEBUG",
+                "App: $appName (${usage.packageName}) → $minutes min"
+            )
+
+            result.add(
+                mapOf(
+                    "packageName" to usage.packageName,
+                    "appName" to appName,
+                    "minutesUsed" to minutes
+                )
+            )
         }
+
+        android.util.Log.d("USAGE_DEBUG", "---- USAGE STATS END ----")
+        return result
     }
-
-    android.util.Log.d("USAGE_DEBUG", "Final usage map: $usageMap")
-    android.util.Log.d("USAGE_DEBUG", "---- USAGE STATS END ----")
-
-    return usageMap
-}
 }

@@ -38,8 +38,22 @@ class AndroidUsageDataSource {
     return result ?? false;
   }
 
-  Future<Map<String, int>> getTodayUsage() async {
-    final result = await _channel.invokeMethod<Map>('getTodayUsage');
-    return result?.map((k, v) => MapEntry(k.toString(), v as int)) ?? {};
+  Future<List<Map<String, dynamic>>> getTodayUsage() async {
+    final result = await _channel.invokeMethod('getTodayUsage');
+
+    if (result is List) {
+      return result.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+    } else if (result is Map) {
+      // Fallback for older native implementation
+      return result.entries.map((entry) {
+        return {
+          'packageName': entry.key.toString(),
+          'appName': entry.key.toString(),
+          'minutesUsed': entry.value as int,
+        };
+      }).toList();
+    }
+
+    return [];
   }
 }
