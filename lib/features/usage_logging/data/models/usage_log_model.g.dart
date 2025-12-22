@@ -18,7 +18,8 @@ class AppUsageModelAdapter extends TypeAdapter<AppUsageModel> {
     };
     return AppUsageModel(
       packageName: fields[0] as String,
-      minutesUsed: fields[1] as int,
+      appName: fields[1] as String,
+      minutesUsed: fields[2] as int,
     );
   }
 

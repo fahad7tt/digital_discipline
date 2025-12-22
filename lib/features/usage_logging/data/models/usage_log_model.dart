@@ -9,18 +9,24 @@ class AppUsageModel extends HiveObject {
   String packageName;
 
   @HiveField(1)
+  String appName;
+
+  @HiveField(2)
   int minutesUsed;
 
   AppUsageModel({
     required this.packageName,
+    required this.appName,
     required this.minutesUsed,
   });
 
   AppUsage toEntity() => AppUsage(
      packageName: packageName,
+      appName: appName,
      minutesUsed: minutesUsed);
 
   static AppUsageModel fromEntity(AppUsage usage) => AppUsageModel(
       packageName: usage.packageName,
+      appName: usage.appName,
       minutesUsed: usage.minutesUsed);
 }

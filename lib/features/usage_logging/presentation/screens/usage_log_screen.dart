@@ -67,6 +67,7 @@ class AppUsageDetailScreen extends StatelessWidget {
                   );
                   return AppUsage(
                     packageName: packageName,
+                    appName: appName,
                     minutesUsed: 0,
                   );
                 },

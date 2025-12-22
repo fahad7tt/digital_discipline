@@ -19,6 +19,7 @@ class UsageRepositoryImpl implements UsageRepository {
     return raw.entries
         .map((e) => AppUsage(
               packageName: e.key,
+              appName: e.key, 
               minutesUsed: e.value,
             ))
         .toList();
