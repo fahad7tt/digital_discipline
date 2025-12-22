@@ -17,20 +17,18 @@ class StatsLoading extends StatsState {
 
 class StatsLoaded extends StatsState {
   final int totalMinutesThisWeek;
-  final String mostCommonTrigger;
-  final int logCount;
   final int averageDailyUsage;
+  final bool isImproving;
 
   const StatsLoaded({
     required this.totalMinutesThisWeek,
-    required this.mostCommonTrigger,
-    required this.logCount,
     required this.averageDailyUsage,
+    required this.isImproving,
   });
 
   @override
-  List<Object?> get props =>
-      [totalMinutesThisWeek, mostCommonTrigger, logCount, averageDailyUsage];
+  List<Object> get props =>
+      [totalMinutesThisWeek, averageDailyUsage, isImproving];
 }
 
 class StatsError extends StatsState {

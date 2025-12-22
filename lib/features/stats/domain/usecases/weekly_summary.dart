@@ -1,16 +1,20 @@
-import '../../../usage_logging/domain/entities/usage_log.dart';
-
 class WeeklySummary {
-  int totalMinutes(List<UsageLog> logs) =>
-      logs.fold(0, (sum, log) => sum + log.durationMinutes);
+  /// Total minutes used in the week
+  int totalMinutes(List<int> dailyUsageMinutes) {
+    return dailyUsageMinutes.fold(0, (sum, m) => sum + m);
+  }
 
-  String mostCommonTrigger(List<UsageLog> logs) {
-    final map = <String, int>{};
-    for (var log in logs) {
-      map[log.triggerType] = (map[log.triggerType] ?? 0) + 1;
-    }
-    return map.entries.isEmpty
-        ? 'None'
-        : map.entries.reduce((a, b) => a.value > b.value ? a : b).key;
+  /// Average daily usage
+  double averageDailyUsage(List<int> dailyUsageMinutes) {
+    if (dailyUsageMinutes.isEmpty) return 0;
+    return totalMinutes(dailyUsageMinutes) / dailyUsageMinutes.length;
+  }
+
+  /// Whether usage is improving compared to last week
+  bool isImproving({
+    required int thisWeekTotal,
+    required int lastWeekTotal,
+  }) {
+    return thisWeekTotal < lastWeekTotal;
   }
 }

@@ -1,29 +1,53 @@
+import 'dart:developer';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:equatable/equatable.dart';
-import '../../domain/entities/usage_log.dart';
 import '../../domain/repositories/usage_log_repo.dart';
-import '../../domain/usecases/add_usage_log.dart';
+import 'usage_log_event.dart';
+import 'usage_log_state.dart';
 
-part 'usage_log_event.dart';
-part 'usage_log_state.dart';
+class AppUsageBloc extends Bloc<AppUsageEvent, AppUsageState> {
+  final UsageRepository repository;
 
-class UsageLogBloc extends Bloc<UsageLogEvent, UsageLogState> {
-  final UsageLogRepository repository;
-  final AddUsageLog addUsageLog;
-
-  UsageLogBloc(this.repository, this.addUsageLog) : super(UsageLogInitial()) {
-    on<LoadUsageLogs>(_onLoad);
-    on<AddUsageLogEvent>(_onAdd);
+  AppUsageBloc(this.repository) : super(AppUsageInitial()) {
+    on<LoadTodayUsage>(_onLoadUsage);
+    on<RefreshUsage>(_onLoadUsage);
   }
 
-  Future<void> _onLoad(LoadUsageLogs event, Emitter<UsageLogState> emit) async {
-    emit(UsageLogLoading());
-    final logs = await repository.getLogsForApp(event.focusAppId);
-    emit(UsageLogLoaded(logs));
-  }
+  Future<void> _onLoadUsage(
+  AppUsageEvent event,
+  Emitter<AppUsageState> emit,
+) async {
+  emit(AppUsageLoading());
 
-  Future<void> _onAdd(AddUsageLogEvent event, Emitter<UsageLogState> emit) async {
-    await addUsageLog(event.log);
-    add(LoadUsageLogs(focusAppId: event.log.focusAppId));
+  try {
+    final hasPermission = await repository.hasUsageAccess();
+    log('USAGE_DEBUG → hasPermission: $hasPermission');
+
+    if (!hasPermission) {
+      emit(AppUsagePermissionRequired());
+      return;
+    }
+
+    final usages = await repository.getTodayUsage();
+
+    log('USAGE_DEBUG → Raw usages from repository:');
+    for (final u in usages) {
+      log('USAGE_DEBUG → ${u.packageName} = ${u.minutesUsed} min');
+    }
+
+    final totalMinutes =
+        usages.fold<int>(0, (sum, u) => sum + u.minutesUsed);
+
+    log('USAGE_DEBUG → Total minutes: $totalMinutes');
+
+    emit(
+      AppUsageLoaded(
+        usages: usages,
+        totalMinutes: totalMinutes,
+      ),
+    );
+  } catch (e) {
+    log('USAGE_DEBUG → ERROR: $e');
+    emit(AppUsageError(e.toString()));
   }
+}
 }

@@ -1,19 +1,18 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import '../../../usage_logging/domain/repositories/usage_log_repo.dart';
 import '../../domain/usecases/weekly_summary.dart';
 import '../../domain/usecases/calculate_discipline.dart';
-import '../../../usage_logging/domain/repositories/usage_log_repo.dart';
-
 part 'stats_event.dart';
 part 'stats_state.dart';
 
 class StatsBloc extends Bloc<StatsEvent, StatsState> {
-  final UsageLogRepository usageLogRepository;
+  final UsageRepository usageRepository;
   final WeeklySummary weeklySummary;
   final CalculateDailyDiscipline calculateDailyDiscipline;
 
   StatsBloc(
-    this.usageLogRepository,
+    this.usageRepository,
     this.weeklySummary,
     this.calculateDailyDiscipline,
   ) : super(StatsInitial()) {
@@ -25,27 +24,31 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     Emitter<StatsState> emit,
   ) async {
     emit(StatsLoading());
+
     try {
-      // Get logs for all apps (using empty string for all)
-      final allLogs = await usageLogRepository.getLogsForApp('');
-      
-      // Filter logs from the past 7 days
-      final now = DateTime.now();
-      final sevenDaysAgo = now.subtract(const Duration(days: 7));
-      final weeklyLogs = allLogs
-          .where((log) => log.loggedAt.isAfter(sevenDaysAgo))
-          .toList();
+      // Fetch today’s usage snapshot
+      final todayUsage = await usageRepository.getTodayUsage();
 
-      final totalMinutes = weeklySummary.totalMinutes(weeklyLogs);
-      final mostCommonTrigger = weeklySummary.mostCommonTrigger(weeklyLogs);
+      final todayTotal =
+          todayUsage.fold<int>(0, (sum, u) => sum + u.minutesUsed);
 
-      emit(StatsLoaded(
-        totalMinutesThisWeek: totalMinutes,
-        mostCommonTrigger: mostCommonTrigger,
-        logCount: weeklyLogs.length,
-        averageDailyUsage:
-            weeklyLogs.isEmpty ? 0 : (totalMinutes / 7).round(),
-      ));
+      // ⚠️ Placeholder until historical storage is added
+      // For now we simulate a 7-day list using today’s data
+      final last7Days = List<int>.filled(7, todayTotal);
+
+      final weeklyTotal =
+          weeklySummary.totalMinutes(last7Days);
+
+      final avgDaily =
+          weeklySummary.averageDailyUsage(last7Days).round();
+
+      emit(
+        StatsLoaded(
+          totalMinutesThisWeek: weeklyTotal,
+          averageDailyUsage: avgDaily,
+          isImproving: false, // real comparison later
+        ),
+      );
     } catch (e) {
       emit(StatsError(e.toString()));
     }

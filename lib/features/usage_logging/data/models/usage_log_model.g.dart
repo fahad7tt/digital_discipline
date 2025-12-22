@@ -6,39 +6,30 @@ part of 'usage_log_model.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class UsageLogModelAdapter extends TypeAdapter<UsageLogModel> {
+class AppUsageModelAdapter extends TypeAdapter<AppUsageModel> {
   @override
   final int typeId = 1;
 
   @override
-  UsageLogModel read(BinaryReader reader) {
+  AppUsageModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return UsageLogModel(
-      id: fields[0] as String,
-      focusAppId: fields[1] as String,
-      durationMinutes: fields[2] as int,
-      triggerType: fields[3] as String,
-      loggedAt: fields[4] as DateTime,
+    return AppUsageModel(
+      packageName: fields[0] as String,
+      minutesUsed: fields[1] as int,
     );
   }
 
   @override
-  void write(BinaryWriter writer, UsageLogModel obj) {
+  void write(BinaryWriter writer, AppUsageModel obj) {
     writer
       ..writeByte(5)
       ..writeByte(0)
-      ..write(obj.id)
+      ..write(obj.packageName)
       ..writeByte(1)
-      ..write(obj.focusAppId)
-      ..writeByte(2)
-      ..write(obj.durationMinutes)
-      ..writeByte(3)
-      ..write(obj.triggerType)
-      ..writeByte(4)
-      ..write(obj.loggedAt);
+      ..write(obj.minutesUsed);
   }
 
   @override
@@ -47,7 +38,7 @@ class UsageLogModelAdapter extends TypeAdapter<UsageLogModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UsageLogModelAdapter &&
+      other is AppUsageModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

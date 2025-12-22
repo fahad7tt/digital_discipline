@@ -1,7 +1,6 @@
-import '../entities/usage_log.dart';
+import '../entities/app_usage.dart';
 
-abstract class UsageLogRepository {
-  Future<List<UsageLog>> getLogsForApp(String focusAppId);
-  Future<void> addLog(UsageLog log);
-  Future<void> deleteLog(String id);
+abstract class UsageRepository {
+  Future<bool> hasUsageAccess();
+  Future<List<AppUsage>> getTodayUsage();
 }

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../dashboard/presentation/screens/dashboard_screen.dart';
 import '../digital_app/presentation/screens/digital_app_screen.dart';
 import '../stats/presentation/screens/stats_screen.dart';
+import '../usage_logging/presentation/bloc/usage_log_bloc.dart';
+import '../usage_logging/presentation/bloc/usage_log_event.dart';
 import '../usage_logging/presentation/screens/usage_log_screen.dart';
 
 class RootScreen extends StatefulWidget {
@@ -11,16 +14,39 @@ class RootScreen extends StatefulWidget {
   State<RootScreen> createState() => _RootScreenState();
 }
 
-class _RootScreenState extends State<RootScreen> {
+class _RootScreenState extends State<RootScreen>
+    with WidgetsBindingObserver {
   int _selectedIndex = 0;
 
-  // List of screens for bottom nav
   final List<({String label, IconData icon, Widget screen})> _screens = const [
     (label: 'Dashboard', icon: Icons.home, screen: DashboardScreen()),
     (label: 'Apps', icon: Icons.apps, screen: DigitalAppScreen()),
-    (label: 'Usage', icon: Icons.timer, screen: UsageLogScreen(focusAppId: '', focusAppName: 'All Apps')),
+    (label: 'Usage', icon: Icons.timer, screen: AppUsageDetailScreen(packageName: '', appName: '')),
     (label: 'Stats', icon: Icons.insights, screen: StatsScreen()),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
+    // initial load
+    context.read<AppUsageBloc>().add(LoadTodayUsage());
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// 🔑 CRITICAL: refresh permission + usage when returning from settings
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      context.read<AppUsageBloc>().add(RefreshUsage());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

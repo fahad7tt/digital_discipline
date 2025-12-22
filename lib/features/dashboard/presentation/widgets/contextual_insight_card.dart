@@ -17,12 +17,12 @@ class ContextualInsightCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.lightbulb,
-                  color: Colors.blue[600],
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
+                // Icon(
+                //   Icons.lightbulb,
+                //   color: Colors.blue[600],
+                //   size: 20,
+                // ),
+                // const SizedBox(width: 8),
                 Text(
                   '💡 Reflection',
                   style: TextStyle(

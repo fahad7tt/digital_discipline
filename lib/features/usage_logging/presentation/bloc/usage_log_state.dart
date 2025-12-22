@@ -1,22 +1,24 @@
-part of 'usage_log_bloc.dart';
+import 'package:digital_discipline/features/usage_logging/domain/entities/app_usage.dart';
 
-abstract class UsageLogState extends Equatable {
-  const UsageLogState();
-  @override
-  List<Object?> get props => [];
+abstract class AppUsageState {}
+
+class AppUsageInitial extends AppUsageState {}
+
+class AppUsageLoading extends AppUsageState {}
+
+class AppUsageLoaded extends AppUsageState {
+  final List<AppUsage> usages;
+  final int totalMinutes;
+
+  AppUsageLoaded({
+    required this.usages,
+    required this.totalMinutes,
+  });
 }
 
-class UsageLogInitial extends UsageLogState {}
-class UsageLogLoading extends UsageLogState {}
-class UsageLogLoaded extends UsageLogState {
-  final List<UsageLog> logs;
-  const UsageLogLoaded(this.logs);
-  @override
-  List<Object?> get props => [logs];
-}
-class UsageLogError extends UsageLogState {
+class AppUsagePermissionRequired extends AppUsageState {}
+
+class AppUsageError extends AppUsageState {
   final String message;
-  const UsageLogError(this.message);
-  @override
-  List<Object?> get props => [message];
+  AppUsageError(this.message);
 }

@@ -69,11 +69,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     BuildContext context,
     List apps,
   ) {
-    final usageLogRepository =
-        RepositoryProvider.of<UsageLogRepository>(context);
+    final usageRepository =
+        RepositoryProvider.of<UsageRepository>(context);
 
     return FutureBuilder(
-      future: _getHighestUsageInsight(usageLogRepository, apps),
+      future: _getHighestUsageInsight(usageRepository),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const SizedBox.shrink();
@@ -95,6 +95,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  Future _getHighestUsageInsight(
+  UsageRepository repo,
+) async {
+  final usages = await repo.getTodayUsage();
+
+  if (usages.isEmpty) return null;
+
+  final highestUsage = usages
+      .map((u) => u.minutesUsed)
+      .reduce((a, b) => a > b ? a : b);
+
+  if (highestUsage >= 15) {
+    return AppDI.getContextualInsight(highestUsage);
+  }
+
+  return null;
+}
+
   Widget _buildFallbackInsight() {
     return Column(
       children: [
@@ -102,36 +120,5 @@ class _DashboardScreenState extends State<DashboardScreen> {
         const SizedBox(height: 16),
       ],
     );
-  }
-
-  Future _getHighestUsageInsight(
-    UsageLogRepository repo,
-    List apps,
-  ) async {
-    final today = DateTime.now();
-    final startOfDay = DateTime(today.year, today.month, today.day);
-
-    // Find the app with highest usage today
-    var highestDuration = 0;
-
-    for (final app in apps) {
-      final logs = await repo.getLogsForApp(app.id);
-      final todayLogs =
-          logs.where((l) => l.loggedAt.isAfter(startOfDay)).toList();
-      final totalToday =
-          todayLogs.fold<int>(0, (sum, log) => sum + log.durationMinutes);
-
-      if (totalToday > highestDuration) {
-        highestDuration = totalToday;
-      }
-    }
-
-    // Get contextual insight for highest usage
-    if (highestDuration >= 15) {
-      final insight = AppDI.getContextualInsight(highestDuration);
-      return insight;
-    }
-
-    return null;
   }
 }

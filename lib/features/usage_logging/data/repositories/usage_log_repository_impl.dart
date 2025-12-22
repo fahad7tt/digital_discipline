@@ -1,26 +1,26 @@
-import '../../domain/entities/usage_log.dart';
+import 'package:digital_discipline/features/usage_logging/domain/entities/app_usage.dart';
+
 import '../../domain/repositories/usage_log_repo.dart';
 import '../datasources/usage_log_local_datasource.dart';
-import '../models/usage_log_model.dart';
 
-class UsageLogRepositoryImpl implements UsageLogRepository {
-  final UsageLogLocalDataSource local;
+class UsageRepositoryImpl implements UsageRepository {
+  final AndroidUsageDataSource dataSource;
 
-  UsageLogRepositoryImpl(this.local);
+  UsageRepositoryImpl(this.dataSource);
 
   @override
-  Future<void> addLog(UsageLog log) {
-    return local.addLog(UsageLogModel.fromEntity(log));
+  Future<bool> hasUsageAccess() {
+    return dataSource.hasUsageAccess();
   }
 
   @override
-  Future<void> deleteLog(String id) {
-    return local.deleteLog(id);
-  }
-
-  @override
-  Future<List<UsageLog>> getLogsForApp(String focusAppId) async {
-    final models = await local.getLogsForApp(focusAppId);
-    return models.map((e) => e.toEntity()).toList();
+  Future<List<AppUsage>> getTodayUsage() async {
+    final raw = await dataSource.getTodayUsage();
+    return raw.entries
+        .map((e) => AppUsage(
+              packageName: e.key,
+              minutesUsed: e.value,
+            ))
+        .toList();
   }
 }

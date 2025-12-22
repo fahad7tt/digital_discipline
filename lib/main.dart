@@ -9,14 +9,15 @@ import 'features/navigation/root_screen.dart';
 import 'features/stats/presentation/bloc/stats_bloc.dart';
 import 'features/usage_logging/data/models/usage_log_model.dart';
 import 'features/usage_logging/domain/repositories/usage_log_repo.dart';
-import 'features/usage_logging/domain/usecases/add_usage_log.dart';
+import 'features/usage_logging/presentation/bloc/usage_log_bloc.dart';
+import 'features/usage_logging/presentation/bloc/usage_log_event.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
   Hive.registerAdapter(DigitalAppModelAdapter());
-  Hive.registerAdapter(UsageLogModelAdapter());
+  Hive.registerAdapter(AppUsageModelAdapter());
 
   await AppDI.init();
 
@@ -30,11 +31,17 @@ class IntentApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<UsageLogRepository>.value(value: AppDI.usageLogRepository),
-        RepositoryProvider<AddUsageLog>.value(value: AppDI.addUsageLog),
+         RepositoryProvider<UsageRepository>.value(
+          value: AppDI.usageRepository,
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
+          BlocProvider(
+  create: (_) => AppUsageBloc(AppDI.usageRepository)
+    ..add(LoadTodayUsage()),
+),
+
           BlocProvider(
             create: (_) => DigitalAppBloc(
               AppDI.addDigitalApp,
@@ -43,7 +50,7 @@ class IntentApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (_) => StatsBloc(
-              AppDI.usageLogRepository,
+              AppDI.usageRepository,
               AppDI.weeklySummary,
               AppDI.calculateDailyDiscipline,
             ),
