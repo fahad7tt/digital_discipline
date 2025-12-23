@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
@@ -12,19 +13,40 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
   final WeeklySummary weeklySummary;
   final CalculateDailyDiscipline calculateDailyDiscipline;
 
+  Timer? _refreshTimer;
+
   StatsBloc(
     this.usageRepository,
     this.weeklySummary,
     this.calculateDailyDiscipline,
   ) : super(StatsInitial()) {
     on<LoadStats>(_onLoad);
+    on<RefreshStats>(_onLoad);
+
+    // Start periodic timer for live updates
+    _startPeriodicRefresh();
+  }
+
+  void _startPeriodicRefresh() {
+    _refreshTimer?.cancel();
+    _refreshTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      add(const RefreshStats());
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _refreshTimer?.cancel();
+    return super.close();
   }
 
   Future<void> _onLoad(
-    LoadStats event,
+    StatsEvent event,
     Emitter<StatsState> emit,
   ) async {
-    emit(StatsLoading());
+    if (event is LoadStats) {
+      emit(StatsLoading());
+    }
     try {
       // Fetch both Today's usage (trusted for current day) and Weekly usage (history)
       final results = await Future.wait([

@@ -10,6 +10,9 @@ import '../../features/stats/domain/usecases/calculate_discipline.dart';
 import '../../features/stats/domain/usecases/weekly_summary.dart';
 import '../../features/dashboard/domain/usecases/get_todays_insight.dart';
 import '../../features/dashboard/domain/usecases/get_contextual_insight.dart';
+import '../../features/reflection/data/datasources/reflection_local_datasource.dart';
+import '../../features/reflection/data/repositories/reflection_repository_impl.dart';
+import '../../features/reflection/domain/repositories/reflection_repository.dart';
 
 class AppDI {
   // Digital apps
@@ -18,6 +21,9 @@ class AppDI {
 
   // Automatic usage tracking
   static late UsageRepository usageRepository;
+
+  // Reflection
+  static late ReflectionRepository reflectionRepository;
 
   // Stats & insights
   static late WeeklySummary weeklySummary;
@@ -30,14 +36,11 @@ class AppDI {
     // ─────────────────────────────────────────────
     // Digital Apps
     // ─────────────────────────────────────────────
-    final digitalAppBox =
-        await Hive.openBox<DigitalAppModel>('digitalAppsBox');
+    final digitalAppBox = await Hive.openBox<DigitalAppModel>('digitalAppsBox');
 
-    final digitalAppLocal =
-        DigitalAppLocalDataSourceImpl(digitalAppBox);
+    final digitalAppLocal = DigitalAppLocalDataSourceImpl(digitalAppBox);
 
-    digitalAppRepository =
-        DigitalAppRepositoryImpl(digitalAppLocal);
+    digitalAppRepository = DigitalAppRepositoryImpl(digitalAppLocal);
 
     addDigitalApp = AddDigitalApp(digitalAppRepository);
 
@@ -46,8 +49,13 @@ class AppDI {
     // ─────────────────────────────────────────────
     final androidUsageDataSource = AndroidUsageDataSource();
 
-    usageRepository =
-        UsageRepositoryImpl(androidUsageDataSource);
+    usageRepository = UsageRepositoryImpl(androidUsageDataSource);
+
+    // ─────────────────────────────────────────────
+    // Reflection
+    // ─────────────────────────────────────────────
+    final reflectionDatasource = ReflectionLocalDatasource();
+    reflectionRepository = ReflectionRepositoryImpl(reflectionDatasource);
 
     // ─────────────────────────────────────────────
     // Stats & Insights

@@ -10,3 +10,7 @@ abstract class StatsEvent extends Equatable {
 class LoadStats extends StatsEvent {
   const LoadStats();
 }
+
+class RefreshStats extends StatsEvent {
+  const RefreshStats();
+}
