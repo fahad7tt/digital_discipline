@@ -39,9 +39,7 @@ class UsageOverviewScreen extends StatelessWidget {
             }
 
             if (state is AppUsageLoaded) {
-              final usages = state.usages
-                  .where(_isUserApp)
-                  .toList()
+              final usages = state.usages.where(_isUserApp).toList()
                 ..sort(
                   (a, b) => b.minutesUsed.compareTo(a.minutesUsed),
                 );
@@ -104,7 +102,7 @@ class _TotalUsageCard extends StatelessWidget {
           children: [
             const Text('Today'),
             Text(
-              '$minutes min',
+              _formatDuration(minutes),
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -126,7 +124,7 @@ class _UsageTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(usage.appName),
-      trailing: Text('${usage.minutesUsed} min'),
+      trailing: Text(_formatDuration(usage.minutesUsed)),
       onTap: () {
         Navigator.push(
           context,
@@ -139,5 +137,18 @@ class _UsageTile extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+String _formatDuration(int totalMinutes) {
+  if (totalMinutes < 60) {
+    return '$totalMinutes min';
+  } else {
+    final hours = totalMinutes ~/ 60;
+    final minutes = totalMinutes % 60;
+    if (minutes == 0) {
+      return '$hours hr';
+    }
+    return '$hours hr $minutes min';
   }
 }

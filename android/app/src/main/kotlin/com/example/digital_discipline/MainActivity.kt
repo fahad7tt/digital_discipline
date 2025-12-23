@@ -21,6 +21,7 @@ class MainActivity : FlutterActivity() {
         ).setMethodCallHandler { call, result ->
             when (call.method) {
                 "getTodayUsage" -> result.success(getTodayUsage())
+                "getWeeklyUsage" -> result.success(getWeeklyUsage()) // Added line
                 "hasUsageAccess" -> result.success(hasUsageAccess())
                 else -> result.notImplemented()
             }
@@ -37,13 +38,92 @@ class MainActivity : FlutterActivity() {
         return mode == AppOpsManager.MODE_ALLOWED
     }
 
-    // ✅ THIS IS THE FIX
     private fun getTodayUsage(): List<Map<String, Any>> {
         val usageStatsManager =
             getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
+        val calendar = java.util.Calendar.getInstance()
+        calendar.set(java.util.Calendar.HOUR_OF_DAY, 0)
+        calendar.set(java.util.Calendar.MINUTE, 0)
+        calendar.set(java.util.Calendar.SECOND, 0)
+        calendar.set(java.util.Calendar.MILLISECOND, 0)
+
+        val startTime = calendar.timeInMillis
         val endTime = System.currentTimeMillis()
-        val startTime = endTime - 24 * 60 * 60 * 1000
+
+        val events = usageStatsManager.queryEvents(startTime, endTime)
+        val event = android.app.usage.UsageEvents.Event()
+        val startTimes = mutableMapOf<String, Long>()
+        val totalUsage = mutableMapOf<String, Long>()
+
+        while (events.hasNextEvent()) {
+            events.getNextEvent(event)
+            when (event.eventType) {
+                android.app.usage.UsageEvents.Event.MOVE_TO_FOREGROUND -> {
+                    startTimes[event.packageName] = event.timeStamp
+                }
+                android.app.usage.UsageEvents.Event.MOVE_TO_BACKGROUND -> {
+                    startTimes.remove(event.packageName)?.let { start ->
+                        val duration = event.timeStamp - start
+                        if (duration > 0) {
+                            totalUsage[event.packageName] =
+                                (totalUsage[event.packageName] ?: 0L) + duration
+                        }
+                    }
+                }
+            }
+        }
+
+        // Add duration for currently open apps
+        for ((pkg, start) in startTimes) {
+            val duration = endTime - start
+            if (duration > 0) {
+                totalUsage[pkg] = (totalUsage[pkg] ?: 0L) + duration
+            }
+        }
+
+        val pm = applicationContext.packageManager
+        val result = mutableListOf<Map<String, Any>>()
+
+        for ((packageName, durationMs) in totalUsage) {
+            val minutes = (durationMs / 60000).toInt()
+            if (minutes <= 0) continue
+
+            val appName = try {
+                val appInfo = pm.getApplicationInfo(
+                    packageName,
+                    PackageManager.MATCH_ALL
+                )
+                pm.getApplicationLabel(appInfo).toString()
+            } catch (e: Exception) {
+                packageName
+            }
+
+            result.add(
+                mapOf(
+                    "packageName" to packageName,
+                    "appName" to appName,
+                    "minutesUsed" to minutes
+                    // "date" not strictly needed for getTodayUsage, but we can add if we want consistency
+                )
+            )
+        }
+        return result
+    }
+
+    private fun getWeeklyUsage(): List<Map<String, Any>> {
+        val usageStatsManager =
+            getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+
+        val calendar = java.util.Calendar.getInstance()
+        calendar.set(java.util.Calendar.HOUR_OF_DAY, 0)
+        calendar.set(java.util.Calendar.MINUTE, 0)
+        calendar.set(java.util.Calendar.SECOND, 0)
+        calendar.set(java.util.Calendar.MILLISECOND, 0)
+        calendar.add(java.util.Calendar.DAY_OF_YEAR, -6) // Today + 6 past days = 7 days
+
+        val startTime = calendar.timeInMillis
+        val endTime = System.currentTimeMillis()
 
         val stats = usageStatsManager.queryUsageStats(
             UsageStatsManager.INTERVAL_DAILY,
@@ -51,10 +131,12 @@ class MainActivity : FlutterActivity() {
             endTime
         )
 
+        return parseUsageStats(stats)
+    }
+
+    private fun parseUsageStats(stats: List<android.app.usage.UsageStats>): List<Map<String, Any>> {
         val pm = applicationContext.packageManager
         val result = mutableListOf<Map<String, Any>>()
-
-        android.util.Log.d("USAGE_DEBUG", "---- USAGE STATS START ----")
 
         for (usage in stats) {
             val minutes = (usage.totalTimeInForeground / 60000).toInt()
@@ -67,29 +149,19 @@ class MainActivity : FlutterActivity() {
                 )
                 pm.getApplicationLabel(appInfo).toString()
             } catch (e: Exception) {
-                android.util.Log.e(
-                    "USAGE_DEBUG",
-                    "Failed to resolve app name for ${usage.packageName}",
-                    e
-                )
+                // Log only once per package to avoid spam, or just silence for now
                 usage.packageName
             }
-
-            android.util.Log.d(
-                "USAGE_DEBUG",
-                "App: $appName (${usage.packageName}) → $minutes min"
-            )
 
             result.add(
                 mapOf(
                     "packageName" to usage.packageName,
                     "appName" to appName,
-                    "minutesUsed" to minutes
+                    "minutesUsed" to minutes,
+                    "date" to usage.firstTimeStamp // Include timestamp for bucketing
                 )
             )
         }
-
-        android.util.Log.d("USAGE_DEBUG", "---- USAGE STATS END ----")
         return result
     }
 }

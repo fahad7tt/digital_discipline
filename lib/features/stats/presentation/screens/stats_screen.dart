@@ -54,19 +54,16 @@ class _StatsScreenState extends State<StatsScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-
-                  StatTile(
-                    label: 'Total usage',
-                    value: '${state.totalMinutesThisWeek} min',
+                  _TotalThisWeekCard(
+                    totalMinutes: state.totalMinutesThisWeek,
+                    dailyBreakdown: state.dailyBreakdown,
                   ),
                   const SizedBox(height: 12),
-
                   StatTile(
                     label: 'Average per day',
                     value: '${state.averageDailyUsage} min/day',
                   ),
                   const SizedBox(height: 24),
-
                   TrendNote(isImproving: state.isImproving),
                 ],
               ),
@@ -77,5 +74,58 @@ class _StatsScreenState extends State<StatsScreen> {
         },
       ),
     );
+  }
+}
+
+class _TotalThisWeekCard extends StatelessWidget {
+  final int totalMinutes;
+  final List<Map<String, dynamic>> dailyBreakdown;
+
+  const _TotalThisWeekCard({
+    required this.totalMinutes,
+    required this.dailyBreakdown,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      color: Theme.of(context).cardColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Colors.grey.shade300),
+      ),
+      child: ExpansionTile(
+        title: const Text('Total Usage'),
+        subtitle: Text(
+          _formatDuration(totalMinutes),
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        children: dailyBreakdown.map((dayData) {
+          final day = dayData['day'] as String;
+          final minutes = dayData['minutes'] as int?;
+          return ListTile(
+            title: Text(day),
+            trailing: Text(minutes == null ? '-' : _formatDuration(minutes)),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+String _formatDuration(int totalMinutes) {
+  if (totalMinutes < 60) {
+    return '$totalMinutes min';
+  } else {
+    final hours = totalMinutes ~/ 60;
+    final minutes = totalMinutes % 60;
+    if (minutes == 0) {
+      return '$hours hr';
+    }
+    return '$hours hr $minutes min';
   }
 }

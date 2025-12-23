@@ -56,4 +56,22 @@ class AndroidUsageDataSource {
 
     return [];
   }
+
+  Future<List<Map<String, dynamic>>> getWeeklyUsage() async {
+    final result = await _channel.invokeMethod('getWeeklyUsage');
+
+    if (result is List) {
+      return result.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+    } else if (result is Map) {
+      // Fallback for older native implementation
+      return result.entries.map((entry) {
+        return {
+          'packageName': entry.key.toString(),
+          'appName': entry.key.toString(),
+          'minutesUsed': entry.value as int,
+        };
+      }).toList();
+    }
+    return [];
+  }
 }

@@ -19,16 +19,18 @@ class StatsLoaded extends StatsState {
   final int totalMinutesThisWeek;
   final int averageDailyUsage;
   final bool isImproving;
+  final List<Map<String, dynamic>> dailyBreakdown;
 
   const StatsLoaded({
     required this.totalMinutesThisWeek,
     required this.averageDailyUsage,
     required this.isImproving,
+    required this.dailyBreakdown,
   });
 
   @override
   List<Object> get props =>
-      [totalMinutesThisWeek, averageDailyUsage, isImproving];
+      [totalMinutesThisWeek, averageDailyUsage, isImproving, dailyBreakdown];
 }
 
 class StatsError extends StatsState {
