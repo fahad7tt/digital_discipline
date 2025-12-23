@@ -9,8 +9,6 @@ import '../widgets/reflection_prompt.dart';
 import '../widgets/reflection_streak_card.dart';
 import '../widgets/today_status_card.dart';
 import '../widgets/todays_insight_card.dart';
-import '../../../usage_logging/presentation/bloc/usage_log_bloc.dart';
-import '../../../usage_logging/presentation/bloc/usage_log_state.dart';
 import '../../../reflection/presentation/bloc/reflection_bloc.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -47,33 +45,29 @@ class _DashboardScreenState extends State<DashboardScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Intent')),
-      body: BlocBuilder<AppUsageBloc, AppUsageState>(
-        builder: (context, usageState) {
-          return BlocBuilder<DigitalAppBloc, DigitalAppState>(
-            builder: (context, state) {
-              return Padding(
-                padding: const EdgeInsets.all(16),
-                child: ListView(
-                  children: [
-                    // Streak Counter with Today's Focus
-                    const ReflectionStreakCard(),
-                    const SizedBox(height: 16),
+      body: BlocBuilder<DigitalAppBloc, DigitalAppState>(
+        builder: (context, state) {
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: ListView(
+              children: [
+                // Streak Counter with Today's Focus
+                const ReflectionStreakCard(),
+                const SizedBox(height: 16),
 
-                    TodayStatusCard(),
-                    const SizedBox(height: 16),
+                TodayStatusCard(),
+                const SizedBox(height: 16),
 
-                    if (state is DigitalAppLoaded && state.apps.isNotEmpty)
-                      _buildContextualInsights(context, state.apps),
+                if (state is DigitalAppLoaded && state.apps.isNotEmpty)
+                  _buildContextualInsights(context, state.apps),
 
-                    // Reflection Insights
-                    const ReflectionInsightsCard(),
-                    const SizedBox(height: 16),
+                // Reflection Insights
+                const ReflectionInsightsCard(),
+                const SizedBox(height: 16),
 
-                    ReflectionPrompt(),
-                  ],
-                ),
-              );
-            },
+                ReflectionPrompt(),
+              ],
+            ),
           );
         },
       ),

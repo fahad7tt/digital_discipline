@@ -21,11 +21,11 @@ class ReflectionPrompt extends StatelessWidget {
     if (hour < 20) {
       // Before 8 PM today
       final hoursUntil = 20 - hour;
-      return 'Available in ${hoursUntil}h';
+      return 'Available in $hoursUntil hrs';
     } else {
       // After midnight, available at 8 PM tomorrow
       final hoursUntil = 24 - hour + 20;
-      return 'Available in ${hoursUntil}h';
+      return 'Available in $hoursUntil hrs';
     }
   }
 
@@ -71,51 +71,32 @@ class ReflectionPrompt extends StatelessWidget {
                       ? 'Completed ${reflection?.moodEmoji ?? ''}'
                       : (isAllowed
                           ? 'How did today feel?'
-                          : '${_getTimeUntilAvailable()} (8 PM - 12 AM)'),
+                          : _getTimeUntilAvailable()),
                 ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (hasReflection)
-                      IconButton(
-                        icon: const Icon(Icons.calendar_month),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => BlocProvider.value(
-                                value: context.read<ReflectionBloc>(),
-                                child: const WeeklyReflectionScreen(),
-                              ),
+                    IconButton(
+                      icon: const Icon(Icons.calendar_month),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BlocProvider.value(
+                              value: context.read<ReflectionBloc>(),
+                              child: const WeeklyReflectionScreen(),
                             ),
-                          );
-                        },
-                        tooltip: 'View Weekly Summary',
-                      ),
-                    const Icon(Icons.chevron_right),
+                          ),
+                        );
+                      },
+                      tooltip: 'View Weekly Summary',
+                    ),
                   ],
                 ),
                 onTap: effectiveHasReflection
                     ? null // Disable tap when already completed
                     : (!isAllowed
-                        ? () {
-                            // Show dialog when tapped outside allowed time
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Reflection Time'),
-                                content: Text(
-                                  'Daily reflection is available between 8 PM and 12 AM.\n\n${_getTimeUntilAvailable()}',
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
+                        ? () {}
                         : () {
                             Navigator.push(
                               context,
