@@ -62,8 +62,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
                 // Reflection Insights
                 const ReflectionInsightsCard(),
-                const SizedBox(height: 16),
-
+                const SizedBox(height: 10),
                 ReflectionPrompt(),
               ],
             ),
