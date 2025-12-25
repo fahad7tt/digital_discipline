@@ -51,34 +51,44 @@ class MainActivity : FlutterActivity() {
         val startTime = calendar.timeInMillis
         val endTime = System.currentTimeMillis()
 
+        // 1. Get aggregated stats using the system's bucket (includes PiP)
+        val stats = usageStatsManager.queryUsageStats(
+            UsageStatsManager.INTERVAL_DAILY,
+            startTime,
+            endTime
+        )
+
+        val totalUsage = mutableMapOf<String, Long>()
+        for (usage in stats) {
+            if (usage.totalTimeInForeground > 0) {
+                totalUsage[usage.packageName] = usage.totalTimeInForeground
+            }
+        }
+
+        // 2. Identify the currently active app to add its live session time
+        // UsageStats aggregated time only updates when an app moves to background
         val events = usageStatsManager.queryEvents(startTime, endTime)
         val event = android.app.usage.UsageEvents.Event()
-        val startTimes = mutableMapOf<String, Long>()
-        val totalUsage = mutableMapOf<String, Long>()
+        var lastForegroundApp: String? = null
+        var lastForegroundTime: Long = 0
 
         while (events.hasNextEvent()) {
             events.getNextEvent(event)
-            when (event.eventType) {
-                android.app.usage.UsageEvents.Event.MOVE_TO_FOREGROUND -> {
-                    startTimes[event.packageName] = event.timeStamp
-                }
-                android.app.usage.UsageEvents.Event.MOVE_TO_BACKGROUND -> {
-                    startTimes.remove(event.packageName)?.let { start ->
-                        val duration = event.timeStamp - start
-                        if (duration > 0) {
-                            totalUsage[event.packageName] =
-                                (totalUsage[event.packageName] ?: 0L) + duration
-                        }
-                    }
+            if (event.eventType == android.app.usage.UsageEvents.Event.MOVE_TO_FOREGROUND) {
+                lastForegroundApp = event.packageName
+                lastForegroundTime = event.timeStamp
+            } else if (event.eventType == android.app.usage.UsageEvents.Event.MOVE_TO_BACKGROUND) {
+                if (event.packageName == lastForegroundApp) {
+                    lastForegroundApp = null
                 }
             }
         }
 
-        // Add duration for currently open apps
-        for ((pkg, start) in startTimes) {
-            val duration = endTime - start
-            if (duration > 0) {
-                totalUsage[pkg] = (totalUsage[pkg] ?: 0L) + duration
+        // Add live duration if an app is still in the foreground
+        lastForegroundApp?.let { pkg ->
+            val liveDuration = endTime - lastForegroundTime
+            if (liveDuration > 0) {
+                totalUsage[pkg] = (totalUsage[pkg] ?: 0L) + liveDuration
             }
         }
 
