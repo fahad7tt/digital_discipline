@@ -2,14 +2,13 @@ import 'package:digital_discipline/core/utils/app_di.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../digital_app/presentation/bloc/digital_app_bloc.dart';
+import '../../../reflection/presentation/bloc/reflection_bloc.dart';
 import '../../../usage_logging/domain/repositories/usage_log_repo.dart';
 import '../widgets/contextual_insight_card.dart';
 import '../widgets/reflection_insights_card.dart';
 import '../widgets/reflection_prompt.dart';
 import '../widgets/reflection_streak_card.dart';
-import '../widgets/today_status_card.dart';
 import '../widgets/todays_insight_card.dart';
-import '../../../reflection/presentation/bloc/reflection_bloc.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -53,9 +52,9 @@ class _DashboardScreenState extends State<DashboardScreen>
               children: [
                 // Streak Counter with Today's Focus
                 const ReflectionStreakCard(),
-                const SizedBox(height: 16),
+                // const SizedBox(height: 16),
 
-                TodayStatusCard(),
+                // TodayStatusCard(),
                 const SizedBox(height: 16),
 
                 if (state is DigitalAppLoaded && state.apps.isNotEmpty)

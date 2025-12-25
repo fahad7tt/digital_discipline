@@ -4,6 +4,8 @@ import '../../../reflection/presentation/bloc/reflection_bloc.dart';
 import '../../../reflection/presentation/screens/reflection_screen.dart';
 import '../../../reflection/presentation/screens/weekly_reflection_screen.dart';
 
+import '../../../../core/widgets/modern_card.dart';
+
 class ReflectionPrompt extends StatelessWidget {
   const ReflectionPrompt({super.key});
 
@@ -42,42 +44,58 @@ class ReflectionPrompt extends StatelessWidget {
 
         final isAllowed = _isWithinAllowedTime();
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, bottom: 4.0),
-              child: Text(
-                'Daily reflection is available between 8 PM - 12 AM',
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
-                    ),
-              ),
-            ),
-            Card(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              child: ListTile(
-                leading: Icon(
-                  effectiveHasReflection
-                      ? Icons.check_circle
-                      : (isAllowed ? Icons.edit_note : Icons.lock_clock),
-                  color: effectiveHasReflection
-                      ? Colors.green
-                      : (isAllowed ? null : Colors.grey),
-                ),
-                title: const Text('Daily Reflection'),
-                subtitle: Text(
-                  effectiveHasReflection
-                      ? 'Completed ${reflection?.moodEmoji ?? ''}'
-                      : (isAllowed
-                          ? 'How did today feel?'
-                          : _getTimeUntilAvailable()),
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
+        return ModernCard(
+          padding: EdgeInsets.zero,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 20, left: 20, right: 8),
+                child: Row(
                   children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Daily Reflection',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                  fontSize: 18,
+                                ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            effectiveHasReflection
+                                ? 'Completed ${reflection?.moodEmoji ?? ''}'
+                                : (isAllowed
+                                    ? 'How did today feel?'
+                                    : _getTimeUntilAvailable()),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
                     IconButton(
-                      icon: const Icon(Icons.calendar_month),
+                      icon: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.calendar_month_rounded,
+                          color: Theme.of(context).colorScheme.primary,
+                          size: 20,
+                        ),
+                      ),
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -93,8 +111,11 @@ class ReflectionPrompt extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(height: 12),
+              InkWell(
                 onTap: effectiveHasReflection
-                    ? null // Disable tap when already completed
+                    ? null
                     : (!isAllowed
                         ? () {}
                         : () {
@@ -108,9 +129,84 @@ class ReflectionPrompt extends StatelessWidget {
                               ),
                             );
                           }),
+                child: Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: effectiveHasReflection
+                        ? Colors.green.withOpacity(0.1)
+                        : (isAllowed
+                            ? Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.05)
+                            : Theme.of(context).colorScheme.surface),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: effectiveHasReflection
+                          ? Colors.green.withOpacity(0.2)
+                          : (isAllowed
+                              ? Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.1)
+                              : Theme.of(context).colorScheme.outlineVariant),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        effectiveHasReflection
+                            ? Icons.check_circle_rounded
+                            : (isAllowed
+                                ? Icons.add_circle_outline_rounded
+                                : Icons.lock_outline_rounded),
+                        color: effectiveHasReflection
+                            ? Colors.green
+                            : (isAllowed
+                                ? Theme.of(context).colorScheme.primary
+                                : Colors.grey),
+                        size: 24,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        effectiveHasReflection
+                            ? 'All done for today!'
+                            : (isAllowed
+                                ? 'Start Reflection'
+                                : 'Locked until 8 PM'),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: effectiveHasReflection
+                              ? Colors.green[700]
+                              : (isAllowed
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Colors.grey[700]),
+                        ),
+                      ),
+                      const Spacer(),
+                      if (isAllowed && !effectiveHasReflection)
+                        Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 16,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.only(left: 20, bottom: 16),
+                child: Text(
+                  'Availability: 8 PM - 12 AM',
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
+                ),
+              ),
+            ],
+          ),
         );
       },
     );

@@ -4,6 +4,7 @@ import '../bloc/stats_bloc.dart';
 import '../widgets/error_view.dart';
 import '../widgets/stat_tile.dart';
 import '../widgets/trend_note.dart';
+import '../../../../core/widgets/modern_card.dart';
 
 class StatsScreen extends StatefulWidget {
   const StatsScreen({super.key});
@@ -22,7 +23,7 @@ class _StatsScreenState extends State<StatsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Usage')),
+      appBar: AppBar(title: const Text('Statistics')),
       body: BlocBuilder<StatsBloc, StatsState>(
         builder: (context, state) {
           if (state is StatsLoading) {
@@ -44,27 +45,28 @@ class _StatsScreenState extends State<StatsScreen> {
                 context.read<StatsBloc>().add(const LoadStats());
               },
               child: ListView(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(20),
                 children: [
-                  const Text(
-                    'This Week',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Text(
+                    'Weekly Performance',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   const SizedBox(height: 16),
                   _TotalThisWeekCard(
                     totalMinutes: state.totalMinutesThisWeek,
                     dailyBreakdown: state.dailyBreakdown,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
                   StatTile(
-                    label: 'Average per day',
-                    value: '${state.averageDailyUsage} min/day',
+                    label: 'Daily Average',
+                    value: '${state.averageDailyUsage} min',
+                    icon: Icons.speed_rounded,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
                   TrendNote(isImproving: state.isImproving),
+                  const SizedBox(height: 32),
                 ],
               ),
             );
@@ -88,30 +90,88 @@ class _TotalThisWeekCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      color: Theme.of(context).cardColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey.shade300),
-      ),
-      child: ExpansionTile(
-        title: const Text('Total Usage'),
-        subtitle: Text(
-          _formatDuration(totalMinutes),
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+    return ModernCard(
+      padding: EdgeInsets.zero,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'This Week',
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _formatDuration(totalMinutes),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.date_range_rounded,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        children: dailyBreakdown.map((dayData) {
-          final day = dayData['day'] as String;
-          final minutes = dayData['minutes'] as int?;
-          return ListTile(
-            title: Text(day),
-            trailing: Text(minutes == null ? '-' : _formatDuration(minutes)),
-          );
-        }).toList(),
+          const Divider(height: 1),
+          Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            child: ExpansionTile(
+              title: Text(
+                'Daily Breakdown',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+              children: [
+                ...dailyBreakdown.map((dayData) {
+                  final day = dayData['day'] as String;
+                  final minutes = dayData['minutes'] as int?;
+                  return Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(day,
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.outline)),
+                        Text(
+                          minutes == null ? '-' : _formatDuration(minutes),
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+                const SizedBox(height: 12),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

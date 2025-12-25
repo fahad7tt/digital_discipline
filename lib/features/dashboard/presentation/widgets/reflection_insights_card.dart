@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../reflection/presentation/bloc/reflection_bloc.dart';
 import '../../../usage_logging/domain/repositories/usage_log_repo.dart';
 
+import '../../../../core/widgets/modern_card.dart';
+
 class ReflectionInsightsCard extends StatelessWidget {
   const ReflectionInsightsCard({super.key});
 
@@ -17,41 +19,49 @@ class ReflectionInsightsCard extends StatelessWidget {
 
         final insight = snapshot.data as Map<String, dynamic>;
 
-        return Card(
-          color: Theme.of(context).colorScheme.tertiaryContainer,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.psychology,
-                      color: Theme.of(context).colorScheme.onTertiaryContainer,
+        return ModernCard(
+          color:
+              Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.5),
+          border: Border.all(
+              color: Theme.of(context).colorScheme.secondary.withOpacity(0.1)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .secondary
+                          .withOpacity(0.1),
+                      shape: BoxShape.circle,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Reflection Insight',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onTertiaryContainer,
-                          ),
+                    child: Icon(
+                      Icons.psychology_rounded,
+                      color: Theme.of(context).colorScheme.secondary,
+                      size: 20,
                     ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  insight['message'] as String,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color:
-                            Theme.of(context).colorScheme.onTertiaryContainer,
-                      ),
-                ),
-              ],
-            ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Personal Insight',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                insight['message'] as String,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                      height: 1.5,
+                    ),
+              ),
+            ],
           ),
         );
       },

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/insight_rule.dart';
 
+import '../../../../core/widgets/modern_card.dart';
+
 class ContextualInsightCard extends StatelessWidget {
   final InsightRule insight;
 
@@ -8,42 +10,47 @@ class ContextualInsightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.blue[50],
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                // Icon(
-                //   Icons.lightbulb,
-                //   color: Colors.blue[600],
-                //   size: 20,
-                // ),
-                // const SizedBox(width: 8),
-                Text(
-                  '💡 Reflection',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.blue[700],
-                  ),
+    return ModernCard(
+      color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
+      border: Border.all(
+          color: Theme.of(context).colorScheme.primary.withOpacity(0.2)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  shape: BoxShape.circle,
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              insight.insightText,
-              style: const TextStyle(
-                fontSize: 14,
-                height: 1.6,
-                fontWeight: FontWeight.w500,
+                child: Icon(
+                  Icons.lightbulb_rounded,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 18,
+                ),
               ),
-            ),
-          ],
-        ),
+              const SizedBox(width: 12),
+              Text(
+                'Intentional Insight',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            insight.insightText,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  height: 1.6,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+          ),
+        ],
       ),
     );
   }

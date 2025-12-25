@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/digital_app_bloc.dart';
 import '../widgets/add_app_dialog.dart';
+import '../../../../core/widgets/modern_card.dart';
 
 class DigitalAppScreen extends StatefulWidget {
   const DigitalAppScreen({super.key});
@@ -71,56 +72,119 @@ class _DigitalAppScreenState extends State<DigitalAppScreen> {
           // 3️⃣ DATA STATE - Show list of apps
           if (state is DigitalAppLoaded) {
             return ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.all(16),
               itemCount: state.apps.length,
               itemBuilder: (context, index) {
                 final app = state.apps[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  child: ListTile(
-                    leading: const Icon(Icons.phone_iphone),
-                    title: Text(app.name),
-                    subtitle: Text(
-                      'Daily limit: ${app.dailyLimitMinutes} minutes',
-                    ),
-                    trailing: PopupMenuButton<String>(
-                      onSelected: (value) {
-                        if (value == 'edit') {
-                          showDialog(
-                            context: context,
-                            builder: (_) => AddAppDialog(existingApp: app),
-                          );
-                        } else if (value == 'delete') {
-                          // confirm before deleting
-                          showDialog(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: const Text('Delete App'),
-                              content: Text('Delete "${app.name}"?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(ctx),
-                                  child: const Text('Cancel'),
+                return ModernCard(
+                  padding: EdgeInsets.zero,
+                  child: Column(
+                    children: [
+                      ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 8),
+                        leading: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            Icons.phone_iphone_rounded,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        title: Text(
+                          app.name,
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                        subtitle: Text(
+                          'Daily limit: ${app.dailyLimitMinutes}m',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                        ),
+                        trailing: PopupMenuButton<String>(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16)),
+                          icon: const Icon(Icons.more_vert_rounded),
+                          onSelected: (value) {
+                            if (value == 'edit') {
+                              showDialog(
+                                context: context,
+                                builder: (_) => AddAppDialog(existingApp: app),
+                              );
+                            } else if (value == 'delete') {
+                              showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: const Text('Remove Intention'),
+                                  content: Text('Stop tracking "${app.name}"?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(ctx),
+                                      child: const Text('Cancel'),
+                                    ),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Theme.of(ctx)
+                                            .colorScheme
+                                            .errorContainer,
+                                        foregroundColor:
+                                            Theme.of(ctx).colorScheme.error,
+                                        elevation: 0,
+                                      ),
+                                      onPressed: () {
+                                        context
+                                            .read<DigitalAppBloc>()
+                                            .add(DeleteDigitalAppEvent(app.id));
+                                        Navigator.pop(ctx);
+                                      },
+                                      child: const Text('Delete'),
+                                    ),
+                                  ],
                                 ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    context
-                                        .read<DigitalAppBloc>()
-                                        .add(DeleteDigitalAppEvent(app.id));
-                                    Navigator.pop(ctx);
-                                  },
-                                  child: const Text('Delete'),
-                                ),
-                              ],
+                              );
+                            }
+                          },
+                          itemBuilder: (context) => [
+                            const PopupMenuItem(
+                              value: 'edit',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.edit_outlined, size: 20),
+                                  SizedBox(width: 12),
+                                  Text('Edit'),
+                                ],
+                              ),
                             ),
-                          );
-                        }
-                      },
-                      itemBuilder: (context) => [
-                        const PopupMenuItem(value: 'edit', child: Text('Edit')),
-                        const PopupMenuItem(value: 'delete', child: Text('Delete')),
-                      ],
-                    ),
+                            PopupMenuItem(
+                              value: 'delete',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.delete_outline_rounded,
+                                      size: 20,
+                                      color:
+                                          Theme.of(context).colorScheme.error),
+                                  const SizedBox(width: 12),
+                                  Text('Delete',
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .error)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },

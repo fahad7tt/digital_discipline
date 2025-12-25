@@ -6,6 +6,7 @@ import '../bloc/usage_log_event.dart';
 import '../bloc/usage_log_state.dart';
 import '../widgets/usage_permission.dart';
 import 'usage_log_screen.dart';
+import '../../../../core/widgets/modern_card.dart';
 
 class UsageOverviewScreen extends StatelessWidget {
   const UsageOverviewScreen({super.key});
@@ -21,20 +22,13 @@ class UsageOverviewScreen extends StatelessWidget {
         child: BlocBuilder<AppUsageBloc, AppUsageState>(
           builder: (context, state) {
             if (state is AppUsageLoading) {
-              return ListView(
-                children: [
-                  SizedBox(height: 300),
-                  Center(child: CircularProgressIndicator()),
-                ],
-              );
+              return const Center(child: CircularProgressIndicator());
             }
 
             if (state is AppUsagePermissionRequired) {
-              return ListView(
-                children: [
-                  SizedBox(height: 300),
-                  PermissionRequiredView(),
-                ],
+              return Padding(
+                padding: const EdgeInsets.only(top: 100),
+                child: PermissionRequiredView(),
               );
             }
 
@@ -48,32 +42,41 @@ class UsageOverviewScreen extends StatelessWidget {
                   usages.fold<int>(0, (s, u) => s + u.minutesUsed);
 
               if (usages.isEmpty) {
-                return ListView(
-                  children: [
-                    SizedBox(height: 300),
-                    Center(
-                      child: Text(
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.history_toggle_off_rounded,
+                          size: 64, color: Colors.grey[300]),
+                      const SizedBox(height: 16),
+                      Text(
                         'No usage yet today',
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(color: Colors.grey[600]),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 );
               }
 
               return ListView(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(20),
                 children: [
                   _TotalUsageCard(totalMinutes),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
+                  Text(
+                    'App Breakdown',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
+                  ),
+                  const SizedBox(height: 8),
                   ...usages.map((usage) => _UsageTile(usage)),
                 ],
               );
             }
 
-            return ListView(
-              children: [SizedBox(height: 300)],
-            );
+            return const SizedBox.shrink();
           },
         ),
       ),
@@ -94,22 +97,47 @@ class _TotalUsageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text('Today'),
-            Text(
-              _formatDuration(minutes),
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
+    return ModernCard(
+      gradientColors: [
+        Theme.of(context).colorScheme.primary,
+        Theme.of(context).colorScheme.secondary
+      ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.query_stats_rounded,
+                  color: Colors.white.withOpacity(0.8), size: 20),
+              const SizedBox(width: 8),
+              Text(
+                'Today\'s Activity',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.8),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            _formatDuration(minutes),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 32,
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Keep it intentional',
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.7),
+              fontSize: 12,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -122,20 +150,52 @@ class _UsageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(usage.appName),
-      trailing: Text(_formatDuration(usage.minutesUsed)),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => AppUsageDetailScreen(
-              packageName: usage.packageName,
-              appName: usage.appName,
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardTheme.color,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        title: Text(
+          usage.appName,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        trailing: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text(
+            _formatDuration(usage.minutesUsed),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.primary,
+              fontSize: 13,
             ),
           ),
-        );
-      },
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => AppUsageDetailScreen(
+                packageName: usage.packageName,
+                appName: usage.appName,
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
