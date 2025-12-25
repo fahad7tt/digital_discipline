@@ -35,7 +35,7 @@ class ReflectionStreakCard extends StatelessWidget {
                   Theme.of(context).colorScheme.secondary,
                 ]
               : [
-                  Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
                   Theme.of(context).colorScheme.primary,
                 ],
           child: Column(
@@ -48,7 +48,7 @@ class ReflectionStreakCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         shape: BoxShape.circle,
                       ),
                       child: const Text(
@@ -73,7 +73,7 @@ class ReflectionStreakCard extends StatelessWidget {
                           Text(
                             _getStreakMessage(streak),
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.9),
+                              color: Colors.white.withValues(alpha: 0.9),
                               fontSize: 14,
                             ),
                           ),
@@ -105,7 +105,8 @@ class ReflectionStreakCard extends StatelessWidget {
               if (todaysFocus != null) ...[
                 if (streak > 0) ...[
                   const SizedBox(height: 20),
-                  Divider(color: Colors.white.withOpacity(0.2), height: 1),
+                  Divider(
+                      color: Colors.white.withValues(alpha: 0.2), height: 1),
                   const SizedBox(height: 20),
                 ],
                 Row(
@@ -114,7 +115,7 @@ class ReflectionStreakCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -131,7 +132,7 @@ class ReflectionStreakCard extends StatelessWidget {
                           Text(
                             'Today\'s Focus',
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
+                              color: Colors.white.withValues(alpha: 0.8),
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                               letterSpacing: 1.2,

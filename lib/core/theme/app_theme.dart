@@ -14,10 +14,9 @@ class AppTheme {
     ),
     scaffoldBackgroundColor: const Color(0xFFF8F9FE),
     cardTheme: CardTheme(
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      color: Colors.indigoAccent.withOpacity(0.1)
-    ),
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        color: Colors.indigoAccent.withValues(alpha: 0.1)),
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       elevation: 0,

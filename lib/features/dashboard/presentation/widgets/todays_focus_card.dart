@@ -49,8 +49,10 @@ class TodaysFocusCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color:
-                        Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .surface
+                        .withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -82,7 +84,7 @@ class TodaysFocusCard extends StatelessWidget {
                         color: Theme.of(context)
                             .colorScheme
                             .onPrimaryContainer
-                            .withOpacity(0.7),
+                            .withValues(alpha: 0.7),
                         fontStyle: FontStyle.italic,
                       ),
                 ),

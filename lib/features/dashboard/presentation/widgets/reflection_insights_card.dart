@@ -20,10 +20,15 @@ class ReflectionInsightsCard extends StatelessWidget {
         final insight = snapshot.data as Map<String, dynamic>;
 
         return ModernCard(
-          color:
-              Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.5),
+          color: Theme.of(context)
+              .colorScheme
+              .secondaryContainer
+              .withValues(alpha: 0.5),
           border: Border.all(
-              color: Theme.of(context).colorScheme.secondary.withOpacity(0.1)),
+              color: Theme.of(context)
+                  .colorScheme
+                  .secondary
+                  .withValues(alpha: 0.1)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -35,7 +40,7 @@ class ReflectionInsightsCard extends StatelessWidget {
                       color: Theme.of(context)
                           .colorScheme
                           .secondary
-                          .withOpacity(0.1),
+                          .withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(

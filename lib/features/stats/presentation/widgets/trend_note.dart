@@ -10,11 +10,11 @@ class TrendNote extends StatelessWidget {
   Widget build(BuildContext context) {
     return ModernCard(
       color: isImproving
-          ? Colors.green.withOpacity(0.05)
+          ? Colors.green.withValues(alpha: 0.05)
           : Theme.of(context).colorScheme.surface,
       border: Border.all(
         color: isImproving
-            ? Colors.green.withOpacity(0.2)
+            ? Colors.green.withValues(alpha: 0.2)
             : Theme.of(context).colorScheme.outlineVariant,
       ),
       child: Row(

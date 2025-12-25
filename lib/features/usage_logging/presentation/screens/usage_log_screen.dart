@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/usage_log_bloc.dart';
 import '../bloc/usage_log_event.dart';
 import '../bloc/usage_log_state.dart';
-import '../widgets/usage_detail_view.dart';
 import '../widgets/usage_permission.dart';
 
 class AppUsageDetailScreen extends StatelessWidget {
@@ -76,12 +75,6 @@ class AppUsageDetailScreen extends StatelessWidget {
               debugPrint(
                 'USAGE_DEBUG_UI → ✅ Final UI value for $packageName: '
                 '${usage.minutesUsed} min',
-              );
-
-              return ListView(
-                children: [
-                  UsageDetailView(minutes: usage.minutesUsed),
-                ],
               );
             }
 

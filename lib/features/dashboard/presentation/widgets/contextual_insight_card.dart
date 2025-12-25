@@ -11,9 +11,10 @@ class ContextualInsightCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ModernCard(
-      color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
+      color:
+          Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
       border: Border.all(
-          color: Theme.of(context).colorScheme.primary.withOpacity(0.2)),
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -22,7 +23,10 @@ class ContextualInsightCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primary
+                      .withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(

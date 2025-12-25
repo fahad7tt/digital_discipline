@@ -138,11 +138,14 @@ class WeeklyReflectionScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.05),
+              color:
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                  color:
-                      Theme.of(context).colorScheme.primary.withOpacity(0.1)),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primary
+                      .withValues(alpha: 0.1)),
             ),
             child: Row(
               children: [
@@ -244,7 +247,8 @@ class WeeklyReflectionScreen extends StatelessWidget {
       children: [
         Icon(icon,
             size: 18,
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.7)),
+            color:
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.7)),
         const SizedBox(width: 12),
         Expanded(
           child: Column(

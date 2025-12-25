@@ -59,7 +59,7 @@ class YesterdayIntentionCard extends StatelessWidget {
                         color: Theme.of(context)
                             .colorScheme
                             .onSecondaryContainer
-                            .withOpacity(0.7),
+                            .withValues(alpha: 0.7),
                       ),
                 ),
               ],

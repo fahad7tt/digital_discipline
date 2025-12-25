@@ -135,22 +135,22 @@ class ReflectionPrompt extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: effectiveHasReflection
-                        ? Colors.green.withOpacity(0.1)
+                        ? Colors.green.withValues(alpha: 0.1)
                         : (isAllowed
                             ? Theme.of(context)
                                 .colorScheme
                                 .primary
-                                .withOpacity(0.05)
+                                .withValues(alpha: 0.05)
                             : Theme.of(context).colorScheme.surface),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: effectiveHasReflection
-                          ? Colors.green.withOpacity(0.2)
+                          ? Colors.green.withValues(alpha: 0.2)
                           : (isAllowed
                               ? Theme.of(context)
                                   .colorScheme
                                   .primary
-                                  .withOpacity(0.1)
+                                  .withValues(alpha: 0.1)
                               : Theme.of(context).colorScheme.outlineVariant),
                     ),
                   ),

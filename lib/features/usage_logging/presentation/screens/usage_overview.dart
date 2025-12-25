@@ -5,7 +5,6 @@ import '../bloc/usage_log_bloc.dart';
 import '../bloc/usage_log_event.dart';
 import '../bloc/usage_log_state.dart';
 import '../widgets/usage_permission.dart';
-import 'usage_log_screen.dart';
 import '../../../../core/widgets/modern_card.dart';
 
 class UsageOverviewScreen extends StatelessWidget {
@@ -63,6 +62,8 @@ class UsageOverviewScreen extends StatelessWidget {
                 children: [
                   _TotalUsageCard(totalMinutes),
                   const SizedBox(height: 12),
+                  const _MindfulnessNote(),
+                  const SizedBox(height: 24),
                   Text(
                     'App Breakdown',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -72,6 +73,8 @@ class UsageOverviewScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   ...usages.map((usage) => _UsageTile(usage)),
+                 
+                  const SizedBox(height: 20),
                 ],
               );
             }
@@ -108,12 +111,12 @@ class _TotalUsageCard extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.query_stats_rounded,
-                  color: Colors.white.withOpacity(0.8), size: 20),
+                  color: Colors.white.withValues(alpha: 0.8), size: 20),
               const SizedBox(width: 8),
               Text(
                 'Today\'s Activity',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
@@ -133,7 +136,7 @@ class _TotalUsageCard extends StatelessWidget {
           Text(
             'Keep it intentional',
             style: TextStyle(
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha: 0.7),
               fontSize: 12,
             ),
           ),
@@ -157,7 +160,7 @@ class _UsageTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -184,17 +187,49 @@ class _UsageTile extends StatelessWidget {
             ),
           ),
         ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => AppUsageDetailScreen(
-                packageName: usage.packageName,
-                appName: usage.appName,
+      ),
+    );
+  }
+}
+
+class _MindfulnessNote extends StatelessWidget {
+  const _MindfulnessNote();
+
+  @override
+  Widget build(BuildContext context) {
+    return ModernCard(
+      margin: EdgeInsets.zero,
+      color: Theme.of(context).colorScheme.surface,
+      border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.psychology_outlined,
+                color: Theme.of(context).colorScheme.primary,
+                size: 20,
               ),
-            ),
-          );
-        },
+              const SizedBox(width: 8),
+              Text(
+                'Mindfulness Note',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Usage is tracked automatically to help you build awareness. This is not a goal to "beat," but data to help you stay intentional with your digital life.',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  height: 1.5,
+                ),
+          ),
+        ],
       ),
     );
   }
