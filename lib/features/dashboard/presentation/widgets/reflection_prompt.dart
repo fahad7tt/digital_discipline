@@ -35,8 +35,9 @@ class ReflectionPrompt extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ReflectionBloc, ReflectionState>(
       builder: (context, state) {
-        final hasReflection = state is ReflectionLoaded && state.hasReflection;
-        final reflection = hasReflection ? state.reflection : null;
+        final hasReflection =
+            state is ReflectionLoaded && state.hasTodayReflection;
+        final reflection = hasReflection ? state.todayReflection : null;
 
         // Ensure the reflection is actually for TODAY
         final isReflectionForToday = reflection?.isToday() ?? false;

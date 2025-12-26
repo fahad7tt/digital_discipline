@@ -7,11 +7,26 @@ class ReflectionInitial extends ReflectionState {}
 class ReflectionLoading extends ReflectionState {}
 
 class ReflectionLoaded extends ReflectionState {
-  final DailyReflection? reflection;
+  final DailyReflection? todayReflection;
+  final DailyReflection? yesterdayReflection;
 
-  ReflectionLoaded({this.reflection});
+  ReflectionLoaded({
+    this.todayReflection,
+    this.yesterdayReflection,
+  });
 
-  bool get hasReflection => reflection != null;
+  bool get hasTodayReflection => todayReflection != null;
+  bool get hasYesterdayReflection => yesterdayReflection != null;
+
+  ReflectionLoaded copyWith({
+    DailyReflection? todayReflection,
+    DailyReflection? yesterdayReflection,
+  }) {
+    return ReflectionLoaded(
+      todayReflection: todayReflection ?? this.todayReflection,
+      yesterdayReflection: yesterdayReflection ?? this.yesterdayReflection,
+    );
+  }
 }
 
 class ReflectionSaved extends ReflectionState {

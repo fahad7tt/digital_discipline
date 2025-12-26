@@ -19,10 +19,16 @@ class ReflectionBloc extends Bloc<ReflectionEvent, ReflectionState> {
     LoadTodayReflection event,
     Emitter<ReflectionState> emit,
   ) async {
-    emit(ReflectionLoading());
+    if (state is! ReflectionLoaded) {
+      emit(ReflectionLoading());
+    }
     try {
       final reflection = await repository.getTodayReflection();
-      emit(ReflectionLoaded(reflection: reflection));
+      if (state is ReflectionLoaded) {
+        emit((state as ReflectionLoaded).copyWith(todayReflection: reflection));
+      } else {
+        emit(ReflectionLoaded(todayReflection: reflection));
+      }
     } catch (e) {
       emit(ReflectionError(e.toString()));
     }
@@ -34,7 +40,12 @@ class ReflectionBloc extends Bloc<ReflectionEvent, ReflectionState> {
   ) async {
     try {
       final reflection = await repository.getYesterdayReflection();
-      emit(ReflectionLoaded(reflection: reflection));
+      if (state is ReflectionLoaded) {
+        emit((state as ReflectionLoaded)
+            .copyWith(yesterdayReflection: reflection));
+      } else {
+        emit(ReflectionLoaded(yesterdayReflection: reflection));
+      }
     } catch (e) {
       emit(ReflectionError(e.toString()));
     }

@@ -19,6 +19,7 @@ class _ReflectionScreenState extends State<ReflectionScreen> {
   final _customReflectionController = TextEditingController();
   final _customGratitudeController = TextEditingController();
   final _customIntentionController = TextEditingController();
+  bool _isInitialized = false;
 
   // Predefined options
   final List<String> _reflectionOptions = [
@@ -80,12 +81,15 @@ class _ReflectionScreenState extends State<ReflectionScreen> {
                 backgroundColor: Colors.red,
               ),
             );
-          } else if (state is ReflectionLoaded && state.hasReflection) {
-            final reflection = state.reflection!;
+          } else if (state is ReflectionLoaded &&
+              state.hasTodayReflection &&
+              !_isInitialized) {
+            final reflection = state.todayReflection!;
             _selectedMood = reflection.mood;
             _selectedReflection = reflection.reflectionAnswer;
             _selectedGratitude = reflection.gratitude;
             _selectedIntention = reflection.tomorrowIntention;
+            _isInitialized = true;
           }
         },
         builder: (context, state) {

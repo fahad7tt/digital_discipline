@@ -4,11 +4,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../digital_app/presentation/bloc/digital_app_bloc.dart';
 import '../../../reflection/presentation/bloc/reflection_bloc.dart';
 import '../../../usage_logging/domain/repositories/usage_log_repo.dart';
+import '../../../usage_logging/presentation/bloc/usage_log_bloc.dart';
+import '../../../usage_logging/presentation/bloc/usage_log_event.dart';
+
 import '../widgets/contextual_insight_card.dart';
 import '../widgets/reflection_insights_card.dart';
 import '../widgets/reflection_prompt.dart';
 import '../widgets/reflection_streak_card.dart';
+import '../widgets/today_status_card.dart';
 import '../widgets/todays_insight_card.dart';
+import '../../../settings/presentation/screens/settings_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -36,25 +41,44 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (state == AppLifecycleState.resumed) {
       // Refresh data when app comes back to foreground (especially important for midnight rollover)
       context.read<ReflectionBloc>().add(LoadTodayReflection());
-      context.read<ReflectionBloc>().add(LoadYesterdayReflection());
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Intent')),
-      body: BlocBuilder<DigitalAppBloc, DigitalAppState>(
-        builder: (context, state) {
-          return Padding(
-            padding: const EdgeInsets.all(16),
-            child: ListView(
+      appBar: AppBar(
+        title: const Text('Intent'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SettingsScreen()),
+              );
+            },
+          ),
+        ],
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          context.read<DigitalAppBloc>().add(LoadDigitalApps());
+          context.read<ReflectionBloc>().add(LoadTodayReflection());
+          context.read<AppUsageBloc>().add(LoadTodayUsage());
+          // Optional: slight delay for smooth animation
+          await Future.delayed(const Duration(milliseconds: 600));
+        },
+        child: BlocBuilder<DigitalAppBloc, DigitalAppState>(
+          builder: (context, state) {
+            return ListView(
+              padding: const EdgeInsets.all(16),
+              physics: const AlwaysScrollableScrollPhysics(),
               children: [
                 // Streak Counter with Today's Focus
                 const ReflectionStreakCard(),
-                // const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-                // TodayStatusCard(),
+                TodayStatusCard(),
                 const SizedBox(height: 16),
 
                 if (state is DigitalAppLoaded && state.apps.isNotEmpty)
@@ -62,12 +86,11 @@ class _DashboardScreenState extends State<DashboardScreen>
 
                 // Reflection Insights
                 const ReflectionInsightsCard(),
-                const SizedBox(height: 10),
                 ReflectionPrompt(),
               ],
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
