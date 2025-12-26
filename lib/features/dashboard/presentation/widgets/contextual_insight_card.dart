@@ -37,7 +37,7 @@ class ContextualInsightCard extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Text(
-                'Intentional Insight',
+                'Insight',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.primary,

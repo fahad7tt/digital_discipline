@@ -8,7 +8,7 @@ import 'core/theme/app_theme.dart';
 import 'core/utils/app_di.dart';
 import 'features/digital_app/data/models/digital_app_model.dart';
 import 'features/digital_app/presentation/bloc/digital_app_bloc.dart';
-import 'features/navigation/root_screen.dart';
+import 'features/onboarding/presentation/screens/splash_screen.dart';
 import 'features/reflection/data/models/reflection_model.dart';
 import 'features/reflection/presentation/bloc/reflection_bloc.dart';
 import 'features/stats/presentation/bloc/stats_bloc.dart';
@@ -93,7 +93,7 @@ class IntentApp extends StatelessWidget {
           title: 'Intent – Digital Discipline',
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
-          home: const RootScreen(),
+          home: const SplashScreen(),
         ),
       ),
     );
