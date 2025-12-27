@@ -98,9 +98,9 @@ class SettingsScreen extends StatelessWidget {
                             'You have full control. You can delete all App data by clearing the App\'s storage in device settings or by uninstalling the App.',
                       ),
                       LegalSection(
-                        title: 'Contact Us',
+                        title: 'Changes to This Policy',
                         content:
-                            'If you have any questions, contact us at: ttfahad2317@gmail.com',
+                            'We may update this policy from time to time. We will notify you of any material changes.',
                       ),
                     ],
                   ),
