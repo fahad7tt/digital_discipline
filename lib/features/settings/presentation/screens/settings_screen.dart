@@ -75,27 +75,32 @@ class SettingsScreen extends StatelessWidget {
                       LegalSection(
                         title: 'Introduction',
                         content:
-                            'Welcome to Intent - Digital Discipline. We respect your privacy and are committed to protecting your personal data. This privacy policy explains how we handle your data when you use our mobile application.',
+                            'Welcome to Intent - Digital Discipline. We respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we handle your data when you use our mobile application. Effective Date: December 26, 2025.',
                       ),
                       LegalSection(
-                        title: 'Data We Collect',
+                        title: 'Data Collection and Usage',
                         content:
-                            '• App Usage Data: Time spent on apps you choose to track (via Android Usage Stats).\n• Reflections and Intentions: Daily inputs regarding your goals and mood.',
-                      ),
-                      LegalSection(
-                        title: 'How We Use Your Data',
-                        content:
-                            'To provide personalized insights, discipline scores, and history charts. All processing is done locally on your device.',
+                            'The App is designed to operate locally on your device.\n\n• App Usage Statistics: To provide you with digital habit insights, we use Android\'s UsageStatsManager. This is processed locally and never sent to our servers.\n• User Reflections: Daily reflections and intentions are stored locally.',
                       ),
                       LegalSection(
                         title: 'Data Storage and Security',
                         content:
-                            'All your data is stored locally on your device using Hive. We do not transmit your personal data to any external servers. Your data never leaves your device.',
+                            'All your data is stored locally on your device using Hive. We do not maintain any cloud-based servers, and your data is never uploaded to any external storage managed by us.',
                       ),
                       LegalSection(
-                        title: 'Permissions',
+                        title: 'Data Sharing and Permissions',
                         content:
-                            'We require Usage Access to monitor app time and Notifications for your daily reflection reminders.',
+                            '• No Data Sharing: We do not sell or trade your information with third parties.\n• Permissions: We require Usage Access for stats and Notifications for reminders.',
+                      ),
+                      LegalSection(
+                        title: 'Data Deletion',
+                        content:
+                            'You have full control. You can delete all App data by clearing the App\'s storage in device settings or by uninstalling the App.',
+                      ),
+                      LegalSection(
+                        title: 'Contact Us',
+                        content:
+                            'If you have any questions, contact us at: ttfahad2317@gmail.com',
                       ),
                     ],
                   ),
