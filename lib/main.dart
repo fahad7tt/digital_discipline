@@ -6,7 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'core/services/notification_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/utils/app_di.dart';
-import 'features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'features/navigation/root_screen.dart';
 import 'features/digital_app/data/models/digital_app_model.dart';
 import 'features/digital_app/presentation/bloc/digital_app_bloc.dart';
 import 'features/reflection/data/models/reflection_model.dart';
@@ -93,7 +93,7 @@ class IntentApp extends StatelessWidget {
           title: 'Intent',
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
-          home: const DashboardScreen(),
+          home: const RootScreen(),
         ),
       ),
     );

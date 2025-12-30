@@ -32,8 +32,8 @@ android {
         applicationId = "app.in.digital_discipline"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        versionCode 9
+        versionName "1.5.0"
     }
 
     signingConfigs {

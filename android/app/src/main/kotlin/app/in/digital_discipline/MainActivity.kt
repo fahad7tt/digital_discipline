@@ -1,4 +1,4 @@
-package com.example.digital_discipline
+package app.`in`.digital_discipline
 
 import android.app.AppOpsManager
 import android.app.usage.UsageStatsManager

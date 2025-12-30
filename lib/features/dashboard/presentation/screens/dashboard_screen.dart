@@ -1,6 +1,7 @@
 import 'package:digital_discipline/core/utils/app_di.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../domain/entities/insight_rule.dart';
 import '../../../digital_app/presentation/bloc/digital_app_bloc.dart';
 import '../../../reflection/presentation/bloc/reflection_bloc.dart';
 import '../../../usage_logging/domain/repositories/usage_log_repo.dart';
@@ -12,7 +13,6 @@ import '../widgets/reflection_insights_card.dart';
 import '../widgets/reflection_prompt.dart';
 import '../widgets/reflection_streak_card.dart';
 import '../widgets/today_status_card.dart';
-import '../widgets/todays_insight_card.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -81,8 +81,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 TodayStatusCard(),
                 const SizedBox(height: 16),
 
-                if (state is DigitalAppLoaded && state.apps.isNotEmpty)
-                  _buildContextualInsights(context, state.apps),
+                _buildInsightSection(context, state),
 
                 // Reflection Insights
                 const ReflectionInsightsCard(),
@@ -95,16 +94,16 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-//   Widget _buildInsightSection(
-//   BuildContext context,
-//   DigitalAppState state,
-// ) {
-//   if (state is! DigitalAppLoaded || state.apps.isEmpty) {
-//     return _buildFallbackInsight();
-//   }
+  Widget _buildInsightSection(
+    BuildContext context,
+    DigitalAppState state,
+  ) {
+    if (state is! DigitalAppLoaded || state.apps.isEmpty) {
+      return _buildFallbackInsight();
+    }
 
-//   return _buildContextualInsights(context, state.apps);
-// }
+    return _buildContextualInsights(context, state.apps);
+  }
 
   Widget _buildContextualInsights(
     BuildContext context,
@@ -153,9 +152,16 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _buildFallbackInsight() {
+    final researchInsight = AppDI.getTodaysInsight();
+    final adaptedRule = InsightRule(
+      minMinutes: 0,
+      insightText: researchInsight.description,
+      category: 'daily_wisdom',
+    );
+
     return Column(
       children: [
-        TodaysInsightCard(insight: AppDI.getTodaysInsight()),
+        ContextualInsightCard(insight: adaptedRule),
         const SizedBox(height: 16),
       ],
     );
