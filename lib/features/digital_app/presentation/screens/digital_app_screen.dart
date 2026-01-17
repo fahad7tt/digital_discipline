@@ -38,30 +38,55 @@ class _DigitalAppScreenState extends State<DigitalAppScreen> {
           // 2️⃣ EMPTY STATE - Show message + button to add first app
           if (state is DigitalAppLoaded && state.apps.isEmpty) {
             return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(32),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.apps,
-                      size: 80,
-                      color: Colors.grey[300],
-                    ),
-                    const SizedBox(height: 24),
-                    const Text(
-                      'Choose one app you want to be more intentional with.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primaryContainer
+                            .withValues(alpha: 0.3),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.auto_awesome_outlined,
+                        size: 64,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                     const SizedBox(height: 32),
-                    ElevatedButton.icon(
+                    Text(
+                      'Start Your Focused Journey',
+                      textAlign: TextAlign.center,
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Select the app that distracts you the most. We\'ll help you build a more intentional relationship with it.',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                    ),
+                    const SizedBox(height: 40),
+                    FilledButton.icon(
                       onPressed: () => _showAddAppDialog(context),
-                      icon: const Icon(Icons.add),
-                      label: const Text('Add First App'),
+                      icon: const Icon(Icons.add_rounded),
+                      label: const Text('Add My First Intention'),
+                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                     ),
                   ],
                 ),

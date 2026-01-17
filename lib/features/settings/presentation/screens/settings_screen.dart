@@ -19,6 +19,20 @@ class SettingsScreen extends StatelessWidget {
             title: const Text('App Version'),
             subtitle: const Text('1.0.0'),
           ),
+          // ListTile(
+          //   leading: const Icon(Icons.rate_review_outlined),
+          //   title: const Text('Rate App & Feedback'),
+          //   subtitle: const Text('Help us improve on Play Store'),
+          //   trailing: const Icon(Icons.open_in_new_rounded),
+          //   onTap: () {
+          //     // Placeholder link for closed testing
+          //     ScaffoldMessenger.of(context).showSnackBar(
+          //       const SnackBar(
+          //         content: Text('Opening Play Store feedback...'),
+          //       ),
+          //     );
+          //   },
+          // ),
           const Divider(),
           _buildSectionHeader(context, 'Legal'),
           ListTile(

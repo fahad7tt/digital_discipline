@@ -31,8 +31,14 @@ class AppDI {
 
   static late GetTodaysInsight getTodaysInsight;
   static late GetContextualInsight getContextualInsight;
+  static late Box settingsBox;
 
   static Future<void> init() async {
+    // ─────────────────────────────────────────────
+    // App Settings
+    // ─────────────────────────────────────────────
+    settingsBox = await Hive.openBox('settingsBox');
+
     // ─────────────────────────────────────────────
     // Digital Apps
     // ─────────────────────────────────────────────

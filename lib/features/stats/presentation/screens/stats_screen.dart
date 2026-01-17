@@ -40,6 +40,39 @@ class _StatsScreenState extends State<StatsScreen> {
           }
 
           if (state is StatsLoaded) {
+            if (state.totalMinutesThisWeek == 0) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.bar_chart_rounded,
+                        size: 64,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .outline
+                            .withValues(alpha: 0.3),
+                      ),
+                      const SizedBox(height: 24),
+                      Text(
+                        'No Data Yet',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Keep using your intended apps to see your progress here. Data usually appears after a few minutes of usage.',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
             return RefreshIndicator(
               onRefresh: () async {
                 context.read<StatsBloc>().add(const LoadStats());
@@ -72,7 +105,12 @@ class _StatsScreenState extends State<StatsScreen> {
             );
           }
 
-          return const SizedBox();
+          return Center(
+            child: Text(
+              'Waiting for data...',
+              style: TextStyle(color: Theme.of(context).colorScheme.outline),
+            ),
+          );
         },
       ),
     );
