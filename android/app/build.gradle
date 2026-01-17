@@ -14,6 +14,9 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
+def flutterVersionCode = project.flutter.versionCode
+def flutterVersionName = project.flutter.versionName
+
 android {
     namespace = "app.in.digital_discipline"
     compileSdk = flutter.compileSdkVersion
@@ -32,6 +35,8 @@ android {
         applicationId = "app.in.digital_discipline"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
+        versionCode = flutterVersionCode.toInteger()
+        versionName = flutterVersionName
     }
 
     signingConfigs {
