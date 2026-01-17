@@ -170,11 +170,9 @@ class ReflectionStreakCard extends StatelessWidget {
       yesterdayReflection = await repo.getYesterdayReflection();
       print(
           'DEBUG: Yesterday reflection found: ${yesterdayReflection != null}');
-      if (yesterdayReflection != null) {
-        print(
-            'DEBUG: Tomorrow intention: ${yesterdayReflection.tomorrowIntention}');
-      }
-    } catch (e) {
+      print(
+          'DEBUG: Tomorrow intention: ${yesterdayReflection!.tomorrowIntention}');
+        } catch (e) {
       print('DEBUG: Error getting yesterday reflection: $e');
     }
 
