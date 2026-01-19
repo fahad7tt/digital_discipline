@@ -14,6 +14,7 @@ import '../widgets/reflection_prompt.dart';
 import '../widgets/reflection_streak_card.dart';
 import '../widgets/today_status_card.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
+import 'package:android_intent_plus/android_intent.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -197,13 +198,18 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   void _openFeedback() {
-    // Placeholder logic - users can provide feedback via Play Console/Play Store app during closed testing.
-    // We provide a Snackbar or open the Play Store link if available.
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Redirecting to Play Store feedback section...'),
-      ),
+    final intent = AndroidIntent(
+      action: 'android.intent.action.VIEW',
+      data: 'market://details?id=app.in.digital_discipline',
     );
+    intent.launch().catchError((e) {
+      final webIntent = AndroidIntent(
+        action: 'android.intent.action.VIEW',
+        data:
+            'https://play.google.com/store/apps/details?id=app.in.digital_discipline',
+      );
+      webIntent.launch();
+    });
   }
 
   Widget _buildInsightSection(
