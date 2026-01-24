@@ -51,17 +51,14 @@ class MainActivity : FlutterActivity() {
         val startTime = calendar.timeInMillis
         val endTime = System.currentTimeMillis()
 
-        // 1. Get aggregated stats using the system's bucket (includes PiP)
-        val stats = usageStatsManager.queryUsageStats(
-            UsageStatsManager.INTERVAL_DAILY,
-            startTime,
-            endTime
-        )
+        // 1. Get aggregated stats for the interval using queryAndAggregateUsageStats
+        // This automatically merges buckets and is more reliable for single intervals
+        val stats = usageStatsManager.queryAndAggregateUsageStats(startTime, endTime)
 
         val totalUsage = mutableMapOf<String, Long>()
-        for (usage in stats) {
+        for ((pkg, usage) in stats) {
             if (usage.totalTimeInForeground > 0) {
-                totalUsage[usage.packageName] = usage.totalTimeInForeground
+                totalUsage[pkg] = (totalUsage[pkg] ?: 0L) + usage.totalTimeInForeground
             }
         }
 
@@ -163,12 +160,21 @@ class MainActivity : FlutterActivity() {
                 usage.packageName
             }
 
+            // Use the start of the day bucket (firstTimeStamp)
+            // and normalize it to midnight local time for consistent bucketing on Dart side
+            val cal = java.util.Calendar.getInstance()
+            cal.timeInMillis = usage.firstTimeStamp
+            cal.set(java.util.Calendar.HOUR_OF_DAY, 0)
+            cal.set(java.util.Calendar.MINUTE, 0)
+            cal.set(java.util.Calendar.SECOND, 0)
+            cal.set(java.util.Calendar.MILLISECOND, 0)
+
             result.add(
                 mapOf(
                     "packageName" to usage.packageName,
                     "appName" to appName,
                     "minutesUsed" to minutes,
-                    "date" to usage.firstTimeStamp // Include timestamp for bucketing
+                    "date" to cal.timeInMillis
                 )
             )
         }

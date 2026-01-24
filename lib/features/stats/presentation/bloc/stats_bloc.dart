@@ -66,9 +66,10 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
       final todayData = rawTodayUsage.where(isUserApp).toList();
       final weeklyData = rawWeeklyUsage.where(isUserApp).toList();
 
-      // Calculate start of the week (Sunday)
+      // Calculate start of the week (Sunday) at midnight local time
       final now = DateTime.now();
-      final startOfWeek = now.subtract(Duration(days: now.weekday % 7));
+      final today = DateTime(now.year, now.month, now.day);
+      final startOfWeek = today.subtract(Duration(days: now.weekday % 7));
 
       final weeklyUsage = List<int>.filled(7, 0, growable: true);
       final dailyBreakdown = <Map<String, dynamic>>[];
@@ -87,17 +88,14 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
           dailyTotal = todayData.fold<int>(0, (sum, u) => sum + u.minutesUsed);
         } else {
           // Source for HISTORY: The 'weekly' api
-          final isFuture =
-              date.isAfter(DateTime(now.year, now.month, now.day, 23, 59, 59));
-
-          if (!isFuture) {
-            dailyTotal = weeklyData.where((u) {
-              if (u.startDate == null) return false;
-              return u.startDate!.year == date.year &&
-                  u.startDate!.month == date.month &&
-                  u.startDate!.day == date.day;
-            }).fold<int>(0, (sum, u) => sum + u.minutesUsed);
-          }
+          // Only look in history for days that are strictly before today
+          dailyTotal = weeklyData.where((u) {
+            if (u.startDate == null) return false;
+            // Strict Day-by-Day match
+            return u.startDate!.year == date.year &&
+                u.startDate!.month == date.month &&
+                u.startDate!.day == date.day;
+          }).fold<int>(0, (sum, u) => sum + u.minutesUsed);
         }
 
         // Handle visualization

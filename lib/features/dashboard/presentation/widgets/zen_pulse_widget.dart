@@ -43,30 +43,29 @@ class _ZenPulseFABState extends State<ZenPulseFAB>
     setState(() {
       _isBreathing = true;
       _secondsLeft = 16;
-      _message = 'Breathe In...';
+      _message = 'Breathe In';
     });
 
     _pulseController.duration = const Duration(seconds: 4);
     _pulseController.repeat(reverse: true);
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_secondsLeft <= 0) {
-        timer.cancel();
-        _reset();
-      } else {
-        if (mounted) {
-          setState(() {
-            _secondsLeft--;
+      if (mounted) {
+        setState(() {
+          _secondsLeft--;
+          if (_secondsLeft <= 0) {
+            timer.cancel();
+            _reset();
+          } else {
             // Logic: 0-4s: In, 4-8s: Out, 8-12s: In, 12-16s: Out
-            // Calculating current unit (0, 1, 2, or 3)
             int elapsed = 16 - _secondsLeft;
             if (elapsed % 8 < 4) {
               _message = 'Breathe In';
             } else {
               _message = 'Breathe Out';
             }
-          });
-        }
+          }
+        });
       }
     });
 
@@ -106,7 +105,9 @@ class _ZenPulseFABState extends State<ZenPulseFAB>
           backgroundColor: Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,
           label: Text(
-            _isBreathing ? '$_message (${_secondsLeft}s)' : 'Zen Pulse',
+            _isBreathing
+                ? (_secondsLeft > 0 ? '$_message (${_secondsLeft}s)' : _message)
+                : 'Zen Pulse',
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.bold,
