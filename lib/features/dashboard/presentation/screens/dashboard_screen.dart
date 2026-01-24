@@ -13,6 +13,7 @@ import '../widgets/reflection_insights_card.dart';
 import '../widgets/reflection_prompt.dart';
 import '../widgets/reflection_streak_card.dart';
 import '../widgets/today_status_card.dart';
+import '../widgets/zen_pulse_widget.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
 import 'package:android_intent_plus/android_intent.dart';
 
@@ -128,6 +129,11 @@ class _DashboardScreenState extends State<DashboardScreen>
           },
         ),
       ),
+      floatingActionButton: Transform.translate(
+        offset: const Offset(0, 13), // Moved 13 pixels more toward the bottom
+        child: const ZenPulseFAB(),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 

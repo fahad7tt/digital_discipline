@@ -65,6 +65,7 @@ class _DigitalAppScreenState extends State<DigitalAppScreen> {
                       style:
                           Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
+                                fontSize: 22
                               ),
                     ),
                     const SizedBox(height: 16),
@@ -75,7 +76,7 @@ class _DigitalAppScreenState extends State<DigitalAppScreen> {
                             color: Theme.of(context).colorScheme.outline,
                           ),
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 30),
                     FilledButton.icon(
                       onPressed: () => _showAddAppDialog(context),
                       icon: const Icon(Icons.add_rounded),

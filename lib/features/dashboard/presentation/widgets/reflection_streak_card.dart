@@ -172,8 +172,8 @@ class ReflectionStreakCard extends StatelessWidget {
           'DEBUG: Yesterday reflection found: ${yesterdayReflection != null}');
       print(
           'DEBUG: Tomorrow intention: ${yesterdayReflection!.tomorrowIntention}');
-        } catch (e) {
-      print('DEBUG: Error getting yesterday reflection: $e');
+    } catch (e) {
+      print('DEBUG: no yesterday reflection found');
     }
 
     // The "tomorrowIntention" from yesterday's reflection is TODAY's focus
