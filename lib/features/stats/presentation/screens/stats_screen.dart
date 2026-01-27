@@ -94,7 +94,7 @@ class _StatsScreenState extends State<StatsScreen> {
                   const SizedBox(height: 16),
                   StatTile(
                     label: 'Daily Average',
-                    value: '${state.averageDailyUsage} min',
+                    value: _formatDuration(state.averageDailyUsage),
                     icon: Icons.speed_rounded,
                   ),
                   const SizedBox(height: 16),

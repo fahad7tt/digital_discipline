@@ -121,62 +121,76 @@ class MainActivity : FlutterActivity() {
     private fun getWeeklyUsage(): List<Map<String, Any>> {
         val usageStatsManager =
             getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-
+        val pm = applicationContext.packageManager
+        
+        // 1. Define the 7-day range
         val calendar = java.util.Calendar.getInstance()
         calendar.set(java.util.Calendar.HOUR_OF_DAY, 0)
         calendar.set(java.util.Calendar.MINUTE, 0)
         calendar.set(java.util.Calendar.SECOND, 0)
         calendar.set(java.util.Calendar.MILLISECOND, 0)
-        calendar.add(java.util.Calendar.DAY_OF_YEAR, -6) // Today + 6 past days = 7 days
-
+        calendar.add(java.util.Calendar.DAY_OF_YEAR, -6)
+        
         val startTime = calendar.timeInMillis
         val endTime = System.currentTimeMillis()
 
-        val stats = usageStatsManager.queryUsageStats(
+        // 2. Query all daily buckets for the range
+        // INTERVAL_DAILY returns multiple buckets, sometimes multiple for one day
+        val statsList = usageStatsManager.queryUsageStats(
             UsageStatsManager.INTERVAL_DAILY,
             startTime,
             endTime
         )
 
-        return parseUsageStats(stats)
-    }
+        // 3. Manually aggregate: Day (Midnight) -> Package -> Total Duration
+        val aggregatedData = mutableMapOf<Long, MutableMap<String, Long>>()
 
-    private fun parseUsageStats(stats: List<android.app.usage.UsageStats>): List<Map<String, Any>> {
-        val pm = applicationContext.packageManager
-        val result = mutableListOf<Map<String, Any>>()
+        for (usage in statsList) {
+            if (usage.totalTimeInForeground <= 0) continue
 
-        for (usage in stats) {
-            val minutes = (usage.totalTimeInForeground / 60000).toInt()
-            if (minutes <= 0) continue
-
-            val appName = try {
-                val appInfo = pm.getApplicationInfo(
-                    usage.packageName,
-                    PackageManager.MATCH_ALL
-                )
-                pm.getApplicationLabel(appInfo).toString()
-            } catch (e: Exception) {
-                // Log only once per package to avoid spam, or just silence for now
-                usage.packageName
-            }
-
-            // Use the start of the day bucket (firstTimeStamp)
-            // and normalize it to midnight local time for consistent bucketing on Dart side
+            // Use the MIDPOINT of the bucket to decide which day it belongs to.
+            // This is more robust than firstTimeStamp if a bucket starts at 11:59 PM.
+            val midpoint = (usage.firstTimeStamp + usage.lastTimeStamp) / 2
+            
             val cal = java.util.Calendar.getInstance()
-            cal.timeInMillis = usage.firstTimeStamp
+            cal.timeInMillis = midpoint
             cal.set(java.util.Calendar.HOUR_OF_DAY, 0)
             cal.set(java.util.Calendar.MINUTE, 0)
             cal.set(java.util.Calendar.SECOND, 0)
             cal.set(java.util.Calendar.MILLISECOND, 0)
+            val dayStart = cal.timeInMillis
 
-            result.add(
-                mapOf(
-                    "packageName" to usage.packageName,
-                    "appName" to appName,
-                    "minutesUsed" to minutes,
-                    "date" to cal.timeInMillis
+            val pkgMap = aggregatedData.getOrPut(dayStart) { mutableMapOf() }
+            val currentDuration = pkgMap.getOrDefault(usage.packageName, 0L)
+            pkgMap[usage.packageName] = currentDuration + usage.totalTimeInForeground
+        }
+
+        // 4. Transform into the flat list of maps expected by the Dart side
+        val result = mutableListOf<Map<String, Any>>()
+        for ((dayStart, pkgMap) in aggregatedData) {
+            for ((packageName, durationMs) in pkgMap) {
+                val minutes = (durationMs / 60000).toInt()
+                if (minutes <= 0) continue
+
+                val appName = try {
+                    val appInfo = pm.getApplicationInfo(
+                        packageName,
+                        PackageManager.MATCH_ALL
+                    )
+                    pm.getApplicationLabel(appInfo).toString()
+                } catch (e: Exception) {
+                    packageName
+                }
+
+                result.add(
+                    mapOf(
+                        "packageName" to packageName,
+                        "appName" to appName,
+                        "minutesUsed" to minutes,
+                        "date" to dayStart
+                    )
                 )
-            )
+            }
         }
         return result
     }
