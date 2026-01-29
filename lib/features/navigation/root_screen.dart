@@ -17,13 +17,6 @@ class RootScreen extends StatefulWidget {
 class _RootScreenState extends State<RootScreen> with WidgetsBindingObserver {
   int _selectedIndex = 0;
 
-  final List<({String label, IconData icon, Widget screen})> _screens = [
-    (label: 'Dashboard', icon: Icons.home, screen: DashboardScreen()),
-    (label: 'Apps', icon: Icons.apps, screen: DigitalAppScreen()),
-    (label: 'Usage', icon: Icons.timer, screen: UsageOverviewScreen()),
-    (label: 'Stats', icon: Icons.insights, screen: StatsScreen()),
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -49,10 +42,17 @@ class _RootScreenState extends State<RootScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final List<({String label, IconData icon, Widget screen})> screens = [
+      (label: 'Dashboard', icon: Icons.home, screen: DashboardScreen()),
+      (label: 'Apps', icon: Icons.apps, screen: DigitalAppScreen()),
+      (label: 'Usage', icon: Icons.timer, screen: UsageOverviewScreen()),
+      (label: 'Stats', icon: Icons.insights, screen: StatsScreen()),
+    ];
+
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
-        children: _screens.map((s) => s.screen).toList(),
+        children: screens.map((s) => s.screen).toList(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
@@ -60,7 +60,7 @@ class _RootScreenState extends State<RootScreen> with WidgetsBindingObserver {
         onTap: (index) {
           setState(() => _selectedIndex = index);
         },
-        items: _screens
+        items: screens
             .map(
               (s) => BottomNavigationBarItem(
                 icon: Icon(s.icon),

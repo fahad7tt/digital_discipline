@@ -101,118 +101,7 @@ class _DigitalAppScreenState extends State<DigitalAppScreen> {
               padding: const EdgeInsets.all(16),
               itemCount: state.apps.length,
               itemBuilder: (context, index) {
-                final app = state.apps[index];
-                return ModernCard(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 8),
-                        leading: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            Icons.phone_iphone_rounded,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                        title: Text(
-                          app.name,
-                          style:
-                              Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                        subtitle: Text(
-                          'Daily Limit: ${TimeFormatter.formatDuration(app.dailyLimitMinutes)}',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.outline,
-                          ),
-                        ),
-                        trailing: PopupMenuButton<String>(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16)),
-                          icon: const Icon(Icons.more_vert_rounded),
-                          onSelected: (value) {
-                            if (value == 'edit') {
-                              showDialog(
-                                context: context,
-                                builder: (_) => AddAppDialog(existingApp: app),
-                              );
-                            } else if (value == 'delete') {
-                              showDialog(
-                                context: context,
-                                builder: (ctx) => AlertDialog(
-                                  title: const Text('Remove Intention'),
-                                  content: Text('Stop tracking "${app.name}"?'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(ctx),
-                                      child: const Text('Cancel'),
-                                    ),
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Theme.of(ctx)
-                                            .colorScheme
-                                            .errorContainer,
-                                        foregroundColor:
-                                            Theme.of(ctx).colorScheme.error,
-                                        elevation: 0,
-                                      ),
-                                      onPressed: () {
-                                        context
-                                            .read<DigitalAppBloc>()
-                                            .add(DeleteDigitalAppEvent(app.id));
-                                        Navigator.pop(ctx);
-                                      },
-                                      child: const Text('Delete'),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
-                          },
-                          itemBuilder: (context) => [
-                            const PopupMenuItem(
-                              value: 'edit',
-                              child: Row(
-                                children: [
-                                  Icon(Icons.edit_outlined, size: 20),
-                                  SizedBox(width: 12),
-                                  Text('Edit'),
-                                ],
-                              ),
-                            ),
-                            PopupMenuItem(
-                              value: 'delete',
-                              child: Row(
-                                children: [
-                                  Icon(Icons.delete_outline_rounded,
-                                      size: 20,
-                                      color:
-                                          Theme.of(context).colorScheme.error),
-                                  const SizedBox(width: 12),
-                                  Text('Delete',
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .error)),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+                return _AppIntentionCard(app: state.apps[index]);
               },
             );
           }
@@ -261,6 +150,122 @@ class _DigitalAppScreenState extends State<DigitalAppScreen> {
     showDialog(
       context: context,
       builder: (context) => const AddAppDialog(),
+    );
+  }
+}
+
+class _AppIntentionCard extends StatelessWidget {
+  final dynamic
+      app; // Using dynamic here to match the local app model if needed, or specify DigitalAppModel
+
+  const _AppIntentionCard({required this.app});
+
+  @override
+  Widget build(BuildContext context) {
+    return ModernCard(
+      padding: EdgeInsets.zero,
+      child: Column(
+        children: [
+          ListTile(
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            leading: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Theme.of(context)
+                    .colorScheme
+                    .primary
+                    .withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                Icons.phone_iphone_rounded,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            title: Text(
+              app.name,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onTertiary,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            subtitle: Text(
+              'Daily Limit: ${TimeFormatter.formatDuration(app.dailyLimitMinutes)}',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.outline,
+              ),
+            ),
+            trailing: PopupMenuButton<String>(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+              icon: const Icon(Icons.more_vert_rounded),
+              onSelected: (value) {
+                if (value == 'edit') {
+                  showDialog(
+                    context: context,
+                    builder: (_) => AddAppDialog(existingApp: app),
+                  );
+                } else if (value == 'delete') {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text('Remove Intention'),
+                      content: Text('Stop tracking "${app.name}"?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: const Text('Cancel'),
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(ctx).colorScheme.errorContainer,
+                            foregroundColor: Theme.of(ctx).colorScheme.error,
+                            elevation: 0,
+                          ),
+                          onPressed: () {
+                            context
+                                .read<DigitalAppBloc>()
+                                .add(DeleteDigitalAppEvent(app.id));
+                            Navigator.pop(ctx);
+                          },
+                          child: const Text('Delete'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'edit',
+                  child: Row(
+                    children: [
+                      Icon(Icons.edit_outlined, size: 20),
+                      SizedBox(width: 12),
+                      Text('Edit'),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 'delete',
+                  child: Row(
+                    children: [
+                      Icon(Icons.delete_outline_rounded,
+                          size: 20, color: Theme.of(context).colorScheme.error),
+                      const SizedBox(width: 12),
+                      Text('Delete',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.error)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

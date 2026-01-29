@@ -166,9 +166,12 @@ class _ReflectionScreenState extends State<ReflectionScreen> {
                   width: double.infinity,
                   child: FilledButton(
                     onPressed: _saveReflection,
-                    child: const Padding(
+                    child: Padding(
                       padding: EdgeInsets.all(16),
-                      child: Text('Save Reflection'),
+                      child: Text('Save Reflection',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),),
                     ),
                   ),
                 ),

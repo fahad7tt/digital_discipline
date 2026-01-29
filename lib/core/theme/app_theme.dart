@@ -11,6 +11,7 @@ class AppTheme {
       primary: Colors.indigo,
       secondary: Colors.indigoAccent,
       surface: const Color(0xFFF8F9FE),
+      onTertiary: Colors.black,
     ),
     scaffoldBackgroundColor: const Color(0xFFF8F9FE),
     cardTheme: CardTheme(
@@ -41,8 +42,11 @@ class AppTheme {
     brightness: Brightness.dark,
     colorScheme: ColorScheme.fromSeed(
       seedColor: Colors.indigo,
+      primary: Colors.indigo,
+      secondary: const Color(0xFFF8F9FE),
       brightness: Brightness.dark,
       surface: const Color(0xFF121212),
+      onTertiary: Colors.white,
     ),
     scaffoldBackgroundColor: const Color(0xFF121212),
     cardTheme: CardTheme(
@@ -69,6 +73,12 @@ class AppTheme {
           fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white70),
       bodyLarge: TextStyle(fontSize: 16, height: 1.5, color: Colors.white),
       bodyMedium: TextStyle(fontSize: 14, height: 1.4, color: Colors.white70),
+    ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      selectedItemColor: Colors.indigo,
+      unselectedItemColor: Colors.grey,
+      backgroundColor: Color(0xFF1E1E1E),
+      elevation: 8,
     ),
   );
 }

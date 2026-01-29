@@ -84,7 +84,7 @@ class _StatsScreenState extends State<StatsScreen> {
                   Text(
                     'Weekly Performance',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontSize: 20,
+                          fontSize: 19,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
@@ -173,7 +173,9 @@ class _TotalThisWeekCard extends StatelessWidget {
                   ),
                   child: Icon(
                     Icons.date_range_rounded,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Theme.of(context).colorScheme.onSurface
+                        : Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ],

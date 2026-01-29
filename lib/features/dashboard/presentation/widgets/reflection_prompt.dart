@@ -72,7 +72,7 @@ class ReflectionPrompt extends StatelessWidget {
                             effectiveHasReflection
                                 ? 'Completed ${reflection?.moodEmoji ?? ''}'
                                 : (isAllowed
-                                    ? 'How did today feel?'
+                                    ? 'How did you feel today?'
                                     : _getTimeUntilAvailable()),
                             style: Theme.of(context)
                                 .textTheme
@@ -93,7 +93,9 @@ class ReflectionPrompt extends StatelessWidget {
                         ),
                         child: Icon(
                           Icons.calendar_month_rounded,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Theme.of(context).colorScheme.onSurface
+                              : Theme.of(context).colorScheme.primary,
                           size: 20,
                         ),
                       ),

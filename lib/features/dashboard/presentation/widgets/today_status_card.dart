@@ -17,9 +17,13 @@ class TodayStatusCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('⏭️ Focus',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('⏭️  Focus',
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black)),
                 const SizedBox(height: 8),
                 Text(
                   snapshot.hasData && snapshot.data != null

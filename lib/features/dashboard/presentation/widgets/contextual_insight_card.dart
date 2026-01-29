@@ -39,6 +39,7 @@ class ContextualInsightCard extends StatelessWidget {
               Text(
                 'Insight',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.primary,
                     ),

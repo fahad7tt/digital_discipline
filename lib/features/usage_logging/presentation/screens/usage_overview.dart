@@ -129,14 +129,14 @@ class _TotalUsageCard extends StatelessWidget {
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 32,
+              fontSize: 29,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             'Keep it intentional',
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.7),
+              color: Colors.white.withValues(alpha: 0.8),
               fontSize: 12,
             ),
           ),
