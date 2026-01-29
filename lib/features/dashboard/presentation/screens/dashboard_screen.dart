@@ -15,7 +15,6 @@ import '../widgets/reflection_streak_card.dart';
 import '../widgets/today_status_card.dart';
 import '../widgets/zen_pulse_widget.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
-import 'package:android_intent_plus/android_intent.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -118,11 +117,8 @@ class _DashboardScreenState extends State<DashboardScreen>
 
                 _buildInsightSection(context, state),
 
-                // Reflection Insights
                 const ReflectionInsightsCard(),
                 ReflectionPrompt(),
-                const SizedBox(height: 24),
-                _buildFeedbackCard(),
                 const SizedBox(height: 32),
               ],
             );
@@ -135,87 +131,6 @@ class _DashboardScreenState extends State<DashboardScreen>
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
-  }
-
-  Widget _buildFeedbackCard() {
-    return Card(
-      elevation: 0,
-      color: Theme.of(context)
-          .colorScheme
-          .secondaryContainer
-          .withValues(alpha: 0.5),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(
-          color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.2),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.rate_review_outlined,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  'Help us improve!',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color:
-                            Theme.of(context).colorScheme.onSecondaryContainer,
-                      ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'As a closed tester, your feedback is crucial. Please let us know what you think on the Play Store.',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSecondaryContainer,
-                  ),
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: () {
-                  // Link to Play Store feedback (placeholder for now)
-                  // In actual production this would open the Play Store listing
-                  // For closed testing, we can guide them to provide feedback via the Play Store app
-                  // Or use the email intent as a fallback.
-                  _openFeedback();
-                },
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.secondary,
-                  side: BorderSide(
-                      color: Theme.of(context).colorScheme.secondary),
-                ),
-                child: const Text('Provide Feedback on Play Store'),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _openFeedback() {
-    final intent = AndroidIntent(
-      action: 'android.intent.action.VIEW',
-      data: 'market://details?id=app.in.digital_discipline',
-    );
-    intent.launch().catchError((e) {
-      final webIntent = AndroidIntent(
-        action: 'android.intent.action.VIEW',
-        data:
-            'https://play.google.com/store/apps/details?id=app.in.digital_discipline',
-      );
-      webIntent.launch();
-    });
   }
 
   Widget _buildInsightSection(

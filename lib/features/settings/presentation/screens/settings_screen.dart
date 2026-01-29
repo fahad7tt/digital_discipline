@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:android_intent_plus/android_intent.dart';
+import 'package:share_plus/share_plus.dart';
 import 'legal_document_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -19,20 +20,24 @@ class SettingsScreen extends StatelessWidget {
             title: const Text('App Version'),
             subtitle: const Text('1.0.0'),
           ),
-          // ListTile(
-          //   leading: const Icon(Icons.rate_review_outlined),
-          //   title: const Text('Rate App & Feedback'),
-          //   subtitle: const Text('Help us improve on Play Store'),
-          //   trailing: const Icon(Icons.open_in_new_rounded),
-          //   onTap: () {
-          //     // Placeholder link for closed testing
-          //     ScaffoldMessenger.of(context).showSnackBar(
-          //       const SnackBar(
-          //         content: Text('Opening Play Store feedback...'),
-          //       ),
-          //     );
-          //   },
-          // ),
+          ListTile(
+            leading: const Icon(Icons.rate_review_outlined),
+            title: const Text('Rate & Feedback'),
+            subtitle: const Text('Help us improve on Play Store'),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () {
+              _openFeedback();
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.mobile_screen_share_outlined),
+            title: const Text('Share App'),
+            subtitle: const Text('Share to your friends and family'),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () {
+              _shareApp();
+            },
+          ),
           const Divider(),
           _buildSectionHeader(context, 'Legal'),
           ListTile(
@@ -152,6 +157,28 @@ class SettingsScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _openFeedback() {
+    final intent = AndroidIntent(
+      action: 'android.intent.action.VIEW',
+      data: 'market://details?id=app.in.digital_discipline',
+    );
+    intent.launch().catchError((e) {
+      final webIntent = AndroidIntent(
+        action: 'android.intent.action.VIEW',
+        data:
+            'https://play.google.com/store/apps/details?id=app.in.digital_discipline',
+      );
+      webIntent.launch();
+    });
+  }
+
+  void _shareApp() {
+    Share.share(
+      'Check out Intent - Digital Discipline App! It helps you monitor your digital habits and improve your focus. Download it here: https://play.google.com/store/apps/details?id=app.in.digital_discipline',
+      subject: 'Improve your Digital Discipline with Intent',
     );
   }
 

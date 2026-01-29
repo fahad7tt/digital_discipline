@@ -18,6 +18,7 @@ dependencies:
   intl: 
   uuid: 
   android_intent_plus:
+  share_plus:
   flutter_local_notifications:
   timezone:
   cupertino_icons: ^1.0.8
