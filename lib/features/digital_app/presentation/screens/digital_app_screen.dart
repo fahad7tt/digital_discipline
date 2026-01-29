@@ -62,11 +62,10 @@ class _DigitalAppScreenState extends State<DigitalAppScreen> {
                     Text(
                       'Start Your Focused Journey',
                       textAlign: TextAlign.center,
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 22
-                              ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold, fontSize: 22),
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -131,7 +130,7 @@ class _DigitalAppScreenState extends State<DigitalAppScreen> {
                                   ),
                         ),
                         subtitle: Text(
-                          'Daily limit: ${app.dailyLimitMinutes}m',
+                          'Daily limit: ${_formatDuration(app.dailyLimitMinutes)}',
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.outline,
                           ),
@@ -262,5 +261,19 @@ class _DigitalAppScreenState extends State<DigitalAppScreen> {
       context: context,
       builder: (context) => const AddAppDialog(),
     );
+  }
+
+  String _formatDuration(int totalMinutes) {
+    if (totalMinutes < 60) {
+      return '$totalMinutes mins';
+    }
+    final int hours = totalMinutes ~/ 60;
+    final int minutes = totalMinutes % 60;
+
+    if (minutes == 0) {
+      return hours == 1 ? '1 hr' : '$hours hrs';
+    }
+
+    return '$hours ${hours == 1 ? 'hr' : 'hrs'} $minutes mins';
   }
 }
