@@ -5,6 +5,7 @@ import '../widgets/error_view.dart';
 import '../widgets/stat_tile.dart';
 import '../widgets/trend_note.dart';
 import '../../../../core/widgets/modern_card.dart';
+import '../../../../core/utils/time_formatter.dart';
 
 class StatsScreen extends StatefulWidget {
   const StatsScreen({super.key});
@@ -83,6 +84,7 @@ class _StatsScreenState extends State<StatsScreen> {
                   Text(
                     'Weekly Performance',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
@@ -94,7 +96,8 @@ class _StatsScreenState extends State<StatsScreen> {
                   const SizedBox(height: 16),
                   StatTile(
                     label: 'Daily Average',
-                    value: _formatDuration(state.averageDailyUsage),
+                    value:
+                        TimeFormatter.formatDuration(state.averageDailyUsage),
                     icon: Icons.speed_rounded,
                   ),
                   const SizedBox(height: 16),
@@ -143,16 +146,18 @@ class _TotalThisWeekCard extends StatelessWidget {
                       Text(
                         'This Week',
                         style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                              fontSize: 16,
                               color: Theme.of(context).colorScheme.outline,
                             ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        _formatDuration(totalMinutes),
+                        TimeFormatter.formatDuration(totalMinutes),
                         style: Theme.of(context)
                             .textTheme
                             .headlineMedium
                             ?.copyWith(
+                              fontSize: 24,
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.primary,
                             ),
@@ -198,7 +203,9 @@ class _TotalThisWeekCard extends StatelessWidget {
                             style: TextStyle(
                                 color: Theme.of(context).colorScheme.outline)),
                         Text(
-                          minutes == null ? '-' : _formatDuration(minutes),
+                          minutes == null
+                              ? '-'
+                              : TimeFormatter.formatDuration(minutes),
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                       ],
@@ -212,18 +219,5 @@ class _TotalThisWeekCard extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-String _formatDuration(int totalMinutes) {
-  if (totalMinutes < 60) {
-    return '$totalMinutes min';
-  } else {
-    final hours = totalMinutes ~/ 60;
-    final minutes = totalMinutes % 60;
-    if (minutes == 0) {
-      return '$hours hr';
-    }
-    return '$hours hr $minutes min';
   }
 }

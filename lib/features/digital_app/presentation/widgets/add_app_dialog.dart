@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/digital_app.dart';
 import '../bloc/digital_app_bloc.dart';
+import '../../../../core/utils/time_formatter.dart';
 
 class AddAppDialog extends StatefulWidget {
   final DigitalApp? existingApp;
@@ -154,9 +155,7 @@ class _AddAppDialogState extends State<AddAppDialog> {
                             return options;
                           },
                           displayStringForOption: (String option) =>
-                              option == 'Other Apps'
-                                  ? ''
-                                  : option,
+                              option == 'Other Apps' ? '' : option,
                           onSelected: (String selection) {
                             if (selection == 'Other Apps') {
                               setState(() {
@@ -251,8 +250,7 @@ class _AddAppDialogState extends State<AddAppDialog> {
                                         (BuildContext context, int index) {
                                       final String option =
                                           options.elementAt(index);
-                                      final isOther =
-                                          option == 'Other Apps';
+                                      final isOther = option == 'Other Apps';
                                       return ListTile(
                                         leading: Icon(
                                           isOther
@@ -314,7 +312,7 @@ class _AddAppDialogState extends State<AddAppDialog> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      _formatDuration(_dailyLimit),
+                      TimeFormatter.formatDuration(_dailyLimit),
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onPrimaryContainer,
                         fontWeight: FontWeight.bold,
@@ -376,20 +374,6 @@ class _AddAppDialogState extends State<AddAppDialog> {
         ),
       ],
     );
-  }
-
-  String _formatDuration(int totalMinutes) {
-    if (totalMinutes < 60) {
-      return '$totalMinutes mins';
-    }
-    final int hours = totalMinutes ~/ 60;
-    final int minutes = totalMinutes % 60;
-
-    if (minutes == 0) {
-      return hours == 1 ? '1 hr' : '$hours hrs';
-    }
-
-    return '$hours ${hours == 1 ? 'hr' : 'hrs'} $minutes mins';
   }
 
   void _submit() {

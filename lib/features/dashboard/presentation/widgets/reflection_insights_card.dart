@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../reflection/presentation/bloc/reflection_bloc.dart';
 import '../../../usage_logging/domain/repositories/usage_log_repo.dart';
+import '../../../../core/utils/time_formatter.dart';
 
 import '../../../../core/widgets/modern_card.dart';
 
@@ -94,12 +95,12 @@ class ReflectionInsightsCard extends StatelessWidget {
       if (avgMood >= 4 && totalMinutes < 120) {
         return {
           'message':
-              'You feel ${_getMoodText(avgMood.round())} on days with <2hr screen time! 😊',
+              'You feel ${_getMoodText(avgMood.round())} on days with less than 2 hrs screen time! 😊',
         };
       } else if (avgMood <= 2 && totalMinutes > 180) {
         return {
           'message':
-              'High screen time (${(totalMinutes / 60).toStringAsFixed(1)}hr) may be affecting your mood. Consider taking breaks! 🌿',
+              'High screen time (${TimeFormatter.formatDuration(totalMinutes)}) may be affecting your mood. Consider taking breaks! 🌿',
         };
       }
 

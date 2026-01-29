@@ -6,6 +6,7 @@ import '../bloc/usage_log_event.dart';
 import '../bloc/usage_log_state.dart';
 import '../widgets/usage_permission.dart';
 import '../../../../core/widgets/modern_card.dart';
+import '../../../../core/utils/time_formatter.dart';
 
 class UsageOverviewScreen extends StatelessWidget {
   const UsageOverviewScreen({super.key});
@@ -73,7 +74,6 @@ class UsageOverviewScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   ...usages.map((usage) => _UsageTile(usage)),
-                 
                   const SizedBox(height: 20),
                 ],
               );
@@ -125,7 +125,7 @@ class _TotalUsageCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            _formatDuration(minutes),
+            TimeFormatter.formatDuration(minutes),
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -179,7 +179,7 @@ class _UsageTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Text(
-            _formatDuration(usage.minutesUsed),
+            TimeFormatter.formatDuration(usage.minutesUsed),
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Theme.of(context).colorScheme.primary,
@@ -232,18 +232,5 @@ class _MindfulnessNote extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-String _formatDuration(int totalMinutes) {
-  if (totalMinutes < 60) {
-    return '$totalMinutes min';
-  } else {
-    final hours = totalMinutes ~/ 60;
-    final minutes = totalMinutes % 60;
-    if (minutes == 0) {
-      return '$hours hr';
-    }
-    return '$hours hr $minutes min';
   }
 }

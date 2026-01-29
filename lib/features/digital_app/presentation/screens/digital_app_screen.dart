@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/digital_app_bloc.dart';
 import '../widgets/add_app_dialog.dart';
 import '../../../../core/widgets/modern_card.dart';
+import '../../../../core/utils/time_formatter.dart';
 
 class DigitalAppScreen extends StatefulWidget {
   const DigitalAppScreen({super.key});
@@ -130,7 +131,7 @@ class _DigitalAppScreenState extends State<DigitalAppScreen> {
                                   ),
                         ),
                         subtitle: Text(
-                          'Daily limit: ${_formatDuration(app.dailyLimitMinutes)}',
+                          'Daily Limit: ${TimeFormatter.formatDuration(app.dailyLimitMinutes)}',
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.outline,
                           ),
@@ -261,19 +262,5 @@ class _DigitalAppScreenState extends State<DigitalAppScreen> {
       context: context,
       builder: (context) => const AddAppDialog(),
     );
-  }
-
-  String _formatDuration(int totalMinutes) {
-    if (totalMinutes < 60) {
-      return '$totalMinutes mins';
-    }
-    final int hours = totalMinutes ~/ 60;
-    final int minutes = totalMinutes % 60;
-
-    if (minutes == 0) {
-      return hours == 1 ? '1 hr' : '$hours hrs';
-    }
-
-    return '$hours ${hours == 1 ? 'hr' : 'hrs'} $minutes mins';
   }
 }
