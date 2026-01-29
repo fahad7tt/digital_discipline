@@ -25,7 +25,7 @@ class _ZenPulseFABState extends State<ZenPulseFAB>
       duration: const Duration(seconds: 2),
     )..repeat(reverse: true);
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.15).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
   }
@@ -60,9 +60,9 @@ class _ZenPulseFABState extends State<ZenPulseFAB>
             // Logic: 0-4s: In, 4-8s: Out, 8-12s: In, 12-16s: Out
             int elapsed = 16 - _secondsLeft;
             if (elapsed % 8 < 4) {
-              _message = 'Breathe In';
+              _message = 'Breathe in';
             } else {
-              _message = 'Breathe Out';
+              _message = 'Breathe out';
             }
           }
         });
@@ -71,7 +71,7 @@ class _ZenPulseFABState extends State<ZenPulseFAB>
 
     _showTopNotification(
       context,
-      'Zen Session Started: Focus on your breath.',
+      'Zen Session Started: Focus on your breath',
       isSuccess: false,
     );
   }
@@ -99,7 +99,7 @@ class _ZenPulseFABState extends State<ZenPulseFAB>
     return ScaleTransition(
       scale: _scaleAnimation,
       child: SizedBox(
-        height: 40,
+        height: 42,
         child: FloatingActionButton.extended(
           heroTag: 'hero_zen_pulse',
           onPressed: _startBreathing,
@@ -135,7 +135,11 @@ class _ZenPulseFABState extends State<ZenPulseFAB>
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSuccess ? Colors.green : Colors.black54,
+              color: isSuccess
+                  ? Colors.green
+                  : (Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black54),
               borderRadius: BorderRadius.circular(12),
               boxShadow: const [
                 BoxShadow(
@@ -144,8 +148,11 @@ class _ZenPulseFABState extends State<ZenPulseFAB>
             ),
             child: Text(
               message,
-              style: const TextStyle(
-                  color: Colors.white,
+              style: TextStyle(
+                  color: (isSuccess ||
+                          Theme.of(context).brightness == Brightness.light)
+                      ? Colors.white
+                      : Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: 13),
             ),
