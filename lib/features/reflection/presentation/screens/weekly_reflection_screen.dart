@@ -91,11 +91,18 @@ class WeeklyReflectionScreen extends StatelessWidget {
         ) /
         reflections.length;
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return ModernCard(
-      gradientColors: [
-        Theme.of(context).colorScheme.primaryContainer,
-        Theme.of(context).colorScheme.surface,
-      ],
+      gradientColors: isDark
+          ? [
+              Theme.of(context).colorScheme.secondary.withValues(alpha: 0.12),
+              Theme.of(context).colorScheme.secondary.withValues(alpha: 0.06),
+            ]
+          : [
+              Theme.of(context).colorScheme.primaryContainer,
+              Theme.of(context).colorScheme.secondaryContainer,
+            ],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -145,7 +152,7 @@ class WeeklyReflectionScreen extends StatelessWidget {
                   color: Theme.of(context)
                       .colorScheme
                       .primary
-                      .withValues(alpha: 0.1)),
+                      .withValues(alpha: 0.3)),
             ),
             child: Row(
               children: [
@@ -154,7 +161,7 @@ class WeeklyReflectionScreen extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Average mood: ${avgMood.toStringAsFixed(1)}/5 ${_getMoodEmoji(avgMood.round())}',
+                    'Average mood: ${avgMood % 1 == 0 ? avgMood.toInt() : avgMood.toStringAsFixed(1)}/5 ${_getMoodEmoji(avgMood.round())}',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.primary,

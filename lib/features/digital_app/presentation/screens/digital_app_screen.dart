@@ -135,6 +135,7 @@ class _DigitalAppScreenState extends State<DigitalAppScreen> {
         builder: (context, state) {
           if (state is DigitalAppLoaded && state.apps.isNotEmpty) {
             return FloatingActionButton(
+              heroTag: 'hero_add_app',
               onPressed: () => _showAddAppDialog(context),
               tooltip: 'Add App',
               child: const Icon(Icons.add),

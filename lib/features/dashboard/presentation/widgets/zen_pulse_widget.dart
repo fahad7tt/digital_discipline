@@ -101,6 +101,7 @@ class _ZenPulseFABState extends State<ZenPulseFAB>
       child: SizedBox(
         height: 40,
         child: FloatingActionButton.extended(
+          heroTag: 'hero_zen_pulse',
           onPressed: _startBreathing,
           backgroundColor: Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,

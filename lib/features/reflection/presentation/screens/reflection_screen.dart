@@ -67,7 +67,7 @@ class _ReflectionScreenState extends State<ReflectionScreen> {
           if (state is ReflectionSaved) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Center(child: Text('Reflection saved! 🎉')),
+                content: Center(child: Text('Reflection saved')),
                 backgroundColor: Colors.green,
               ),
             );
