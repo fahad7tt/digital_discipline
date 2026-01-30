@@ -19,10 +19,11 @@ def flutterVersionName = project.flutter.versionName
 
 android {
     namespace = "app.in.digital_discipline"
-    compileSdk = 34
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -34,7 +35,7 @@ android {
     defaultConfig {
         applicationId = "app.in.digital_discipline"
         minSdkVersion = flutter.minSdkVersion
-        targetSdk = 34
+        targetSdk = 36
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
     }
@@ -66,6 +67,7 @@ flutter {
 }
 
 dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
     implementation platform("org.jetbrains.kotlin:kotlin-bom:1.9.22")
     implementation 'com.google.android.material:material:1.11.0'
 }
