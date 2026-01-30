@@ -14,7 +14,7 @@ class AppTheme {
       onTertiary: Colors.black,
     ),
     scaffoldBackgroundColor: const Color(0xFFF8F9FE),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         color: Colors.indigoAccent.withValues(alpha: 0.1)),
@@ -49,7 +49,7 @@ class AppTheme {
       onTertiary: Colors.white,
     ),
     scaffoldBackgroundColor: const Color(0xFF121212),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       color: const Color(0xFF1E1E1E),
